@@ -3,8 +3,15 @@ export interface IBookListItem {
   bookIntro?: string;
   bookName: string;
   ctime: number;
-  id: number;
+  id: string;
   status: number;
   userId: string;
+  bookCover?: string;
+}
+
+export interface IBookParams {
+  id?: string;
+  bookName: string;
+  bookIntro?: string;
   bookCover?: string;
 }

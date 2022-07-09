@@ -98,12 +98,15 @@ module.exports = {
     port: 3000,
     proxy: {
       '/dzapi': {
-        // target: 'http://192.168.8.142:8080', // 后端
-        target: 'http://127.0.0.1:1234',
+        target: 'http://192.168.8.142:8080', // 后端
         changeOrigin: true, // 是否跨域
         pathRewrite: {
           '^/dzapi': '' // 重写路径
         }
+      },
+      '/api': {
+        target: 'http://127.0.0.1:1234',
+        changeOrigin: true, // 是否跨域
       }
     },
     // before: app => {}

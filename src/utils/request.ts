@@ -17,7 +17,7 @@ interface PendingType {
 const pending: PendingType[] = [];
 const CancelToken = axios.CancelToken;
 const Service = axios.create({
-  baseURL: process.env.NODE_ENV === 'production' ? '' : '/dzapi',
+  baseURL: '/api',
   withCredentials: true,
   timeout: 5000
 });
@@ -49,23 +49,23 @@ Service.interceptors.request.use(
 // 添加响应拦截器
 Service.interceptors.response.use(
   (response: AxiosResponse) => {
-    if (response.status === 200) {
-      // if (response.data.retCode !== 0) {
-      //   if (response.data.retCode === 6) {
+    if (response.status === 404) {
+      router.push({ path: '/404' })
+    }
+    if (response.data.code === 200) {
+      //   if (response.data.code === 6) {
       //     router.push({ path: '/login' })
       //     // 清除用户信息
       //     UserModule.ResetToken();
       //     ElMessage.error('登录失效');
       //   }
-      //   ElNotification({
-      //     message: response.data.retMsg,
-      //     type: 'error'
-      //   })
-      //   return Promise.reject(response.data.retMsg)
-      // }
       return Promise.resolve(response.data.data)
-    } else if (response.status === 404) {
-      router.push({ path: '/404' })
+    } else {
+      ElNotification({
+        message: response.data.message,
+        type: 'error'
+      })
+      return Promise.reject(response.data.message)
     }
   },
   (err: AxiosError) => {

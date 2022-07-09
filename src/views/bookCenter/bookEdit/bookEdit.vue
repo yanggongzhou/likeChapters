@@ -76,7 +76,7 @@ const bookForm = reactive({
   bookCover: ''
 })
 
-const bookId = ref<number | string>()
+const bookId = ref<string>()
 const saveLoading = ref<boolean>(false)
 
 const rules = reactive({

@@ -1,4 +1,5 @@
 import Service from '@/utils/request';
+import { IBookParams } from "@/views/bookCenter/book/index.model.ts";
 /**
  * 书籍列表
  */
@@ -8,34 +9,28 @@ export const ListBook = async () => {
 /**
  * 新增书籍
  */
-export const AddBook = async (param: {
-  bookName: string;
-  bookIntro?: string;
-  bookCover?: string;
-}) => {
+export const AddBook = async (param: IBookParams) => {
   return await Service.post('/book/save', param)
 }
 /**
  * 删除书籍
  * @param id 书籍id
  */
-export const DeleteBook = async (id: number) => {
-  return await Service.post('/book/delete', { id, status: 1 })
+export const DeleteBook = async (id: string) => {
+  return await Service.delete('/book/delete', { params: { id } })
 }
-
-export const EditBook = async (param: {
-  id: string | number;
-  bookName: string;
-  bookIntro?: string;
-  bookCover?: string;
-}) => {
-  return await Service.post('/script-editor/entry/4005', param)
+/**
+ * 编辑书籍
+ */
+export const EditBook = async (param: IBookParams) => {
+  return await Service.post('/book/edit', param)
 }
-
-export const DetailBook = async (id: string | number) => {
-  return await Service.post('/script-editor/entry/4018', { id })
+/**
+ * 书籍详情
+ */
+export const DetailBook = async (id: string) => {
+  return await Service.get('/book/detail', { params: { id } })
 }
-
 
 export const UploadImg = async (param: FormData) => {
   return await Service.post('/script-editor/imgUtil/contentSaveImg', param)

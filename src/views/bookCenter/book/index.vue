@@ -20,7 +20,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import BookList from './part/bookList.vue'
+import BookList from './bookList.vue'
 import { IBookListItem } from '@/views/bookCenter/book/index.model';
 import { onMounted, ref } from 'vue'
 import { DeleteBook, ListBook } from '@/api/bookCenter';
