@@ -110,6 +110,7 @@ Professional image processing software such as Professional can beautify the ima
     bookSource: 'Book',
     characterCenter: 'Character Center',
     gsEditor: 'GS Editor',
+    editor: 'Editor',
     choreographer: 'GS Choreographer',
     materialCenter: 'Material Center',
     profile: 'Profile',

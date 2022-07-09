@@ -29,9 +29,9 @@ const bookRouter: Array<RouteRecordRaw> = [
         component: () => import(/* webpackChunkName: "editBook" */ '@/views/characterCenter/index.vue'),
       },
       {
-        path: '/gsEditor',
+        path: '/editor',
         name: BookRouteNameEnum.编辑器,
-        component: () => import(/* webpackChunkName: "editBook" */ '@/views/gsEditor/index.vue'),
+        component: () => import(/* webpackChunkName: "editBook" */ '@/views/editor/index.vue'),
       },
       {
         path: '/choreographer',

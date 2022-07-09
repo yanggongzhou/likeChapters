@@ -110,7 +110,7 @@ export default {
     bookEdit: '书籍编辑',
     bookSource: '书籍',
     characterCenter: '角色',
-    gsEditor: 'GS 编辑器',
+    editor: '编辑器',
     choreographer: 'GS 编导',
     materialCenter: '素材中心',
     profile: '个人中心',

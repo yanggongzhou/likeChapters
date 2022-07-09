@@ -38,20 +38,20 @@
 <script lang="ts" setup>
 import { reactive, ref, defineProps, defineEmits, PropType, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n';
-import { IChapterForm } from "@/api/bookCenter";
 import { FormInstance } from "@/main";
+import { IChapterParams } from "@/interfaces/chapter.interfaces";
 
 const { t } = useI18n()
 const props = defineProps({
   visible: Boolean,
-  form: Object as PropType<IChapterForm>,
+  form: Object as PropType<IChapterParams>,
 })
 const chapterFormRef = ref<FormInstance>()
 
-const chapterForm = ref({} as IChapterForm)
+const chapterForm = ref({} as IChapterParams)
 watch(() => props.form, (val) => {
-  chapterForm.value = {} as IChapterForm;
-  chapterForm.value = val as IChapterForm;
+  chapterForm.value = {} as IChapterParams;
+  chapterForm.value = val as IChapterParams;
 }, { deep: true })
 watch(() => props.visible, (val) => {
   if (val && chapterFormRef.value) {
@@ -63,7 +63,7 @@ const rules = reactive({
 })
 
 onMounted(() => {
-  chapterForm.value = props.form as IChapterForm
+  chapterForm.value = props.form as IChapterParams
 })
 
 const emits = defineEmits([ 'close', 'confirm' ])

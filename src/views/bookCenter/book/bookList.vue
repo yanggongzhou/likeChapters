@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IBookListItem } from '@/views/bookCenter/book/index.model';
+import { IBookListItem } from '@/interfaces/book.interfaces';
 import { PropType, defineProps, defineEmits } from 'vue';
 import { dayjs, ElMessageBox } from 'element-plus';
 import router from '@/router';

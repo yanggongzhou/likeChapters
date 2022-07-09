@@ -35,7 +35,7 @@ import { ICustomTableColumn } from "@/components/table/index.vue";
 import { useI18n } from "vue-i18n";
 import { onMounted, ref } from "vue";
 import { dayjs } from "element-plus";
-import { IBookListItem } from "@/views/bookCenter/book/index.model";
+import { IBookListItem } from "@/interfaces/book.interfaces";
 import { DeleteBook, ListBook } from "@/api/bookCenter";
 import { useRouter } from "vue-router";
 import { IBookSearch } from "@/views/bookCenter/choBook/index.model";

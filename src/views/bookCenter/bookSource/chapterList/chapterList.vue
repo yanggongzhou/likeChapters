@@ -21,7 +21,7 @@
           {{ dayjs(scope.row.ctime).format('YYYY.MM.DD') }}
         </template>
         <template #operations="scope">
-          <el-button size="small" type="primary" @click.stop="editUseGsEditor(scope.row)">{{ t('common.edit') }}</el-button>
+          <el-button size="small" type="primary" @click.stop="editChapter(scope.row)">{{ t('common.edit') }}</el-button>
           <el-button size="small" @click.stop="goChoreographer(scope.row)">编导</el-button>
         </template>
       </DzTable>
@@ -49,24 +49,25 @@
 import EditChapterDialog from './editChapter.vue'
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import {
   AddChapter,
   EditChapter,
-  IChapterForm,
   ListChapter,
 } from '@/api/bookCenter';
 import { ICustomTableColumn } from "@/components/table/index.vue";
 import { debounce } from "lodash";
 import { dayjs } from "element-plus";
+import { IChapterParams } from "@/interfaces/chapter.interfaces";
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const visible = ref<boolean>(false)
 const bookId = computed(() => route.query?.bookId)
-const columnClick = (row: IChapterForm, property: string) => {
+const columnClick = (row: IChapterParams, property: string) => {
   if (property === 'chapterName' || property === 'chapterIntro') {
-    editChapter(row);
+    const { id, bookId } = row
+    router.push({ name: 'editor', query: { bookId, chapterId: id } })
   }
 }
 
@@ -101,20 +102,20 @@ const createChapter = () => {
   chapterForm.chapterName = ''
   chapterForm.chapterIntro = ''
 }
-const editChapter = (row: IChapterForm) => {
+const editChapter = (row: IChapterParams) => {
   visible.value = true
   chapterForm.id = row.id
   chapterForm.bookId = bookId.value as string
   chapterForm.chapterName = row.chapterName
   chapterForm.chapterIntro = row.chapterIntro || ''
 }
-const chapterForm = reactive<IChapterForm>({
+const chapterForm = reactive<IChapterParams>({
   id: void 0,
   chapterName: '',
   chapterIntro: ''
 })
 
-const onConfirm = async (characterForm: IChapterForm) => {
+const onConfirm = async (characterForm: IChapterParams) => {
   visible.value = false;
   if (characterForm.id) {
     await EditChapter({ ...characterForm, bookId: bookId.value as string })
@@ -128,15 +129,9 @@ const chapterData = reactive({
   chapterList: [],
   getListChapter: async () => {
     const { bookId } = route.query
-    const { chapters } = await ListChapter(bookId as string)
-    chapterData.chapterList = chapters;
+    chapterData.chapterList = await ListChapter(bookId as string);
   }
 })
-
-const editUseGsEditor = (row: any) => {
-  const { id, bookId } = row
-  router.push({ name: 'gsEditor', query: { bookId, chapterId: id } })
-}
 
 const goChoreographer = (row: any) => {
   const { id, bookId } = row

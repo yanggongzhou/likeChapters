@@ -1,9 +1,10 @@
 import Service from '@/utils/request';
-import { IBookParams } from "@/views/bookCenter/book/index.model.ts";
+import { IBookListItem, IBookParams } from "@/interfaces/book.interfaces.ts";
+import { IChapterListItem, IChapterParams } from "@/interfaces/chapter.interfaces";
 /**
  * 书籍列表
  */
-export const ListBook = async () => {
+export const ListBook = async (): Promise<IBookListItem[]> => {
   return await Service.get('/book/list')
 }
 /**
@@ -31,44 +32,35 @@ export const EditBook = async (param: IBookParams) => {
 export const DetailBook = async (id: string) => {
   return await Service.get('/book/detail', { params: { id } })
 }
-
-export const UploadImg = async (param: FormData) => {
-  return await Service.post('/script-editor/imgUtil/contentSaveImg', param)
+/** ---------------------------------------------------------------------------------------------------------- */
+/**
+ * 章节列表
+ * @param bookId 书籍id
+ */
+export const ListChapter = async (bookId: string): Promise<IChapterListItem[]> => {
+  return await Service.get(`/chapter/list`, { params: { bookId } })
 }
 
-export interface IChapterForm {
-  id?: string | number;
-  bookId?: string | number;
-  chapterName: string;
-  chapterIntro?: string;
-}
 /**
  * 添加章节
- * @param param 参数 IChapterForm
+ * @param param 参数 IChapterParams
  */
-export const AddChapter = async (param: IChapterForm) => {
-  return await Service.post('/script-editor/entry/4007', param)
+export const AddChapter = async (param: IChapterParams) => {
+  return await Service.post('/chapter/save', param)
 }
 /**
  * 修改章节
- * @param param 参数 IChapterForm
+ * @param param 参数 IChapterParams
  */
-export const EditChapter = async (param: IChapterForm) => {
-  return await Service.post('/script-editor/entry/4017', param)
+export const EditChapter = async (param: IChapterParams) => {
+  return await Service.post('/chapter/edit', param)
 }
 /**
  * 删除章节
  * @param id 章节id
  */
-export const DeleteChapter = async (id: string | number) => {
-  return await Service.post('/script-editor/entry/4012', { id })
-}
-/**
- * 章节列表
- * @param bookId 书籍id
- */
-export const ListChapter = async (bookId: string | number) => {
-  return await Service.post('/script-editor/entry/4009', { bookId })
+export const DeleteChapter = async (id: string) => {
+  return await Service.delete('/chapter/delete', { params: { id } })
 }
 
 // export function ChangeUserInfo (data) {
@@ -94,4 +86,9 @@ export const SaveScriptContent = async (param: IScriptParam) => {
  */
 export const DetailScript = async (id: string) => {
   return await Service.post('/script-editor/entry/4010', { id })
+}
+
+
+export const UploadImg = async (param: FormData) => {
+  return await Service.post('/common/uploadImg', param)
 }

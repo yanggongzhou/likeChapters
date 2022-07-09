@@ -21,7 +21,7 @@
 </template>
 <script lang="ts" setup>
 import BookList from './bookList.vue'
-import { IBookListItem } from '@/views/bookCenter/book/index.model';
+import { IBookListItem } from '@/interfaces/book.interfaces';
 import { onMounted, ref } from 'vue'
 import { DeleteBook, ListBook } from '@/api/bookCenter';
 import { useI18n } from "vue-i18n";

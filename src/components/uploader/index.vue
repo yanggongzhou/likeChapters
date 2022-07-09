@@ -12,7 +12,6 @@
 
 <script setup lang="ts">
 import { ElNotification } from 'element-plus';
-import { UploadImg } from '@/api/bookCenter';
 import { defineEmits, ref } from 'vue'
 import { useI18n } from "vue-i18n";
 const emits = defineEmits(['upload'])
@@ -33,9 +32,20 @@ const toUpload = async ({ file }: { file: File}) => {
   if (isAllow.value) {
     const formData = new FormData()
     formData.append('img', file)
-    const { url } = await UploadImg(formData)
+    const url = await fileToBase64(file)
     emits('upload', url)
   }
+}
+// file转bse64
+const fileToBase64 = (file: File) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      resolve(e.target.result)
+    }
+    reader.onerror = (error) => reject(error)
+  })
 }
 
 </script>
