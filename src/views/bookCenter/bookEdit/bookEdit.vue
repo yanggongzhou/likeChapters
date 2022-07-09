@@ -172,6 +172,9 @@ const onSubmit = () => {
       /deep/ .el-input__wrapper:hover {
         box-shadow: none;
       }
+      /deep/ .el-input__wrapper {
+        box-shadow: none !important;
+      }
       /deep/ .el-input--suffix .el-input__inner {
         padding: 0 20px;
         box-shadow: none;

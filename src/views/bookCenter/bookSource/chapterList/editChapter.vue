@@ -99,6 +99,9 @@ const closeDialog = () => {
   /deep/ .el-input__wrapper:hover {
     box-shadow: none;
   }
+  /deep/ .el-input__wrapper {
+    box-shadow: none !important;
+  }
   /deep/ .el-input--suffix .el-input__inner {
     padding: 0 20px;
     background-color: #f1f1f1;

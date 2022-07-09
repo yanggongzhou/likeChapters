@@ -5,7 +5,8 @@ import { AddNode, ListChapterNode } from "@/api/gsEditor";
 import storyBus from "@/utils/storyBus";
 import { getG6Data, getGuid } from "@/utils/resultModule";
 import { EBoolean } from "@/interfaces/common.interfaces";
-import { IBiographyForm, IBiographyList, ListCharacter, ListScene } from "@/api/characterCenter";
+import { IBiographyList, ListCharacter, ListScene } from "@/api/characterCenter";
+import { ICharacterListItem } from "@/interfaces/character.interfaces";
 
 @Module({
   dynamic: true,
@@ -18,10 +19,10 @@ class GSEDITOR extends VuexModule implements IGSEditorModuleState {
   public activeNodeId = '' // active的节点id
   public nodeVOS = [] as INodeVOSItem[]; // 章节的节点选项列表
   public sceneList = [] as IBiographyList[]; // 场景列表
-  public characterList = [] as IBiographyForm[]; // 角色列表
+  public characterList = [] as ICharacterListItem[]; // 角色列表
 
   @Mutation
-  private SET_CHARACTERLIST(characterList: IBiographyForm[]) {
+  private SET_CHARACTERLIST(characterList: ICharacterListItem[]) {
     this.characterList = characterList
 
   }
@@ -89,8 +90,7 @@ class GSEDITOR extends VuexModule implements IGSEditorModuleState {
 
   @Action
   public async GetCharacterList (bookId: string) {
-    const { figureBiographies = [] } = await ListCharacter(bookId)
-    this.SET_CHARACTERLIST(figureBiographies)
+    this.SET_CHARACTERLIST(await ListCharacter(bookId))
   }
 }
 

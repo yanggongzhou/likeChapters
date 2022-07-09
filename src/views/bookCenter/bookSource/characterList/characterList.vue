@@ -49,11 +49,11 @@ import {
   EditCharacter,
   SexType,
   GetCharacterDetail,
-  IBiographyForm
 } from "@/api/characterCenter";
 import { ICharacterDetail, IStyles } from "@/store/modules/index.model";
 import { EBoolean } from "@/interfaces/common.interfaces";
 import { GSEditorModule } from "@/store/modules/gsEditor";
+import { ICharacterParams } from "@/interfaces/character.interfaces";
 
 const { t } = useI18n()
 const visible = ref<boolean>(false)
@@ -61,7 +61,7 @@ const route = useRoute()
 const router = useRouter()
 const selectStyleItem = ref<IStyles | undefined>()
 const bookId = computed(() => route.query.bookId as string)
-const characterForm = reactive<IBiographyForm>({
+const characterForm = reactive<ICharacterParams>({
   id: void 0,
   biographyName: '',
   biographyIntro: '',
@@ -79,7 +79,7 @@ const createCharacter = () => {
   selectStyleItem.value = undefined
   visible.value = true
 }
-const editCharacter = async (obj: IBiographyForm) => {
+const editCharacter = async (obj: ICharacterParams) => {
   visible.value = true
   characterForm.id = obj.id
   characterForm.biographyName = obj.biographyName
@@ -93,7 +93,7 @@ const editCharacter = async (obj: IBiographyForm) => {
   //   selectStyleItem.value = res.styles[0]
   // }
 }
-const onConfirm = async (characterForm: IBiographyForm) => {
+const onConfirm = async (characterForm: ICharacterParams) => {
   visible.value = false;
   if (characterForm.id) {
     await EditCharacter({ ...characterForm, bookId: bookId.value as string })

@@ -22,6 +22,7 @@
         </template>
         <template #operations="scope">
           <el-button size="small" type="primary" @click.stop="editChapter(scope.row)">{{ t('common.edit') }}</el-button>
+          <el-button size="small" @click.stop="deleteChapter(scope.row.id)">删除</el-button>
           <el-button size="small" @click.stop="goChoreographer(scope.row)">编导</el-button>
         </template>
       </DzTable>
@@ -51,7 +52,7 @@ import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { computed, onMounted, reactive, ref } from 'vue';
 import {
-  AddChapter,
+  AddChapter, DeleteChapter,
   EditChapter,
   ListChapter,
 } from '@/api/bookCenter';
@@ -109,6 +110,7 @@ const editChapter = (row: IChapterParams) => {
   chapterForm.chapterName = row.chapterName
   chapterForm.chapterIntro = row.chapterIntro || ''
 }
+
 const chapterForm = reactive<IChapterParams>({
   id: void 0,
   chapterName: '',
@@ -136,6 +138,10 @@ const chapterData = reactive({
 const goChoreographer = (row: any) => {
   const { id, bookId } = row
   router.push({ name: 'choreographer', query: { bookId, chapterId: id } })
+}
+
+const deleteChapter = (id: string) => {
+  DeleteChapter(id)
 }
 
 onMounted(() => {

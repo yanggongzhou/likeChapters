@@ -12,22 +12,11 @@
       </div>
     </template>
     <div class="edit-character-content">
-      <div v-if="characterForm.biographyImg">
-        <Uploader @upload="getUploadUrl">
-          <img width="220" height="390" :src="characterForm.biographyImg" alt="">
-        </Uploader>
-      </div>
-      <div v-else>
-        <el-empty :description="t('common.noData')"></el-empty>
-        <Uploader @upload="getUploadUrl" style="text-align: center">
-          <el-button>{{ t('characterCenter.uploadAvatar') }}</el-button>
-        </Uploader>
-      </div>
 
-<!--      <el-empty v-if="!selectStyleItem" :description="t('common.noData')"></el-empty>-->
-<!--      <div v-else class="preview-content">-->
-<!--        <Avatar :width="160" :dataSource="selectStyleItem"/>-->
-<!--      </div>-->
+      <el-empty v-if="!selectStyleItem" :description="t('common.noData')"></el-empty>
+      <div v-else class="preview-content">
+        <Avatar :width="160" :dataSource="selectStyleItem"/>
+      </div>
       <el-form :model="characterForm" :rules="rules" ref="characterFormRef" label-width="120px" class="form-content">
         <el-form-item :label="t('bookSource.characterName')" prop="biographyName">
           <el-input
@@ -68,7 +57,6 @@
 </template>
 
 <script lang="ts" setup>
-import Uploader from '@/components/uploader/index.vue'
 import Avatar from '@/components/avatar/avatar.vue'
 import { reactive, ref, defineProps, defineEmits, PropType, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n';
@@ -98,9 +86,7 @@ onMounted(() => {
 const rules = reactive({
   biographyName: [ { required: true, message: () => t('bookSource.characterNameRuleMsg'), trigger: 'blur' } ]
 })
-const getUploadUrl = (url: string) => {
-  characterForm.value.biographyImg = url
-}
+
 const onConfirm = () => {
   if (!characterFormRef.value) {
     return;
@@ -149,6 +135,9 @@ const closeDialog = () => {
 
   /deep/ .el-input__wrapper:hover {
     box-shadow: none;
+  }
+  /deep/ .el-input__wrapper {
+    box-shadow: none !important;
   }
 
   /deep/ .el-input--suffix .el-input__inner {
