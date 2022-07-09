@@ -1,0 +1,74 @@
+body{
+  font-family: "PingFang SC","Hiragino Sans GB","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-y: scroll;
+}
+body, html, #app {
+  width: 100%;
+  height: 100%;
+  background: #F7F9FB;
+}
+/*body::-webkit-scrollbar{*/
+/*  width: 0;*/
+/*}*/
+body, p, h1,h5,ul ,li{
+  margin: 0;
+  padding: 0
+}
+ul{  list-style:none;  }
+a{
+  text-decoration:none !important;
+  cursor: pointer;
+}
+.left{
+  float:left;
+}
+.right{
+  float: right;
+}
+.clearfix:after {
+  content: " ";
+  display: block;;
+  line-height: 0;
+  height: 0;
+  visibility: hidden;
+  clear: both;
+}
+.center{
+  text-align: center;
+}
+.none{
+  display: none;
+}
+::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px #eee;
+  background-color: #eee;
+}
+::-webkit-scrollbar
+{
+  width: 2px;
+  background-color: #eee;
+}
+::-webkit-scrollbar:horizontal{
+  height: 6px;
+}
+::-webkit-scrollbar-thumb
+{
+  background-color: rgba(213,213,213,0.73);
+  border-radius: 5px;
+}
+.main-wrap{
+  width: 1280px;
+  margin: 0 auto;
+}
+.main-home{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.row100 {
+  width: 100%;
+  height: 100%
+}
+

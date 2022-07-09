@@ -1,0 +1,63 @@
+.biography-page {
+  height: calc(100vh - 205px);
+  width: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+
+  .content-list {
+    height: 100%;
+    padding: 0 10px;
+    counter-reset: chapter 0;
+
+    .content-list_item {
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .edit_btn {
+        opacity: 0;
+        transition: opacity .3s;
+      }
+
+      &:hover .edit_btn {
+        opacity: 1;
+      }
+
+      p {
+        flex: 1;
+        position: relative;
+        width: 100%;
+        height: 30px;
+        line-height: 30px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 0 20px;
+        box-sizing: border-box;
+        border-bottom: 1px solid #ffffff;
+        cursor: pointer;
+
+        &:hover {
+          color: #9191fd;
+        }
+      }
+
+      /deep/ p::before {
+        content: counter(chapter) '.';
+        counter-increment: chapter;
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 14px;
+        text-align: center;
+      }
+
+    }
+
+    .select-item {
+      color: #9191fd;
+    }
+  }
+}
+

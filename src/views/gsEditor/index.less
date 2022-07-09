@@ -1,0 +1,159 @@
+.build-drama-page {
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  height: 100%;
+
+  .content {
+    margin-left: 506px;
+    box-sizing: border-box;
+    overflow: hidden;
+    height: calc(100vh - 160px);
+    padding: 10px;
+
+    .content-center {
+      position: relative;
+      height: calc(100vh - 230px);
+      display: grid;
+      grid-template-columns: auto 120px;
+      grid-column-gap: 10px;
+
+      .editor-content {
+        margin: 0 auto;
+        position: relative;
+        border-radius: 5px;
+        height: calc(100vh - 230px);
+        box-shadow: 0 2px 4px #ced1d5;
+        box-sizing: border-box;
+        width: 670px;
+        background-color: #ffffff;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+    }
+
+
+    #editorRefId {
+      font-size: 15px;
+      border-radius: 5px;
+      width: 100%;
+      padding: 30px 20px 400px;
+      box-sizing: border-box;
+      outline: none;
+      counter-reset: chapter 0;
+      transition: all 1s linear;
+      -webkit-user-select: text;
+    }
+
+    /deep/ .sceneheading {
+      position: relative;
+      background-color: #c0c0c09e;
+      margin: 0 42px 10px;
+      padding: 5px;
+      font-weight: bold;
+      border-radius: 3px;
+      min-height: 14px;
+      text-transform: uppercase;
+    }
+
+    /deep/ .sceneheading::before {
+      content: counter(chapter)'.';
+      counter-increment: chapter;
+      position: absolute;
+      top: 0;
+      left: -40px;
+      font-size: 14px;
+      width: 40px;
+      padding: 5px 0;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    /deep/ .narrator {
+      padding: 0 42px 14px;
+    }
+
+    /deep/ .character {
+      padding: 0 42px 14px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    /deep/ .expression {
+      padding: 0 182px;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /deep/ .expression::before {
+      content: '( ';
+      width: 10px;
+      text-align: center;
+      // position: absolute;
+      // margin-left: -10px;
+      padding-bottom: 5px;
+      display: inline-block;
+    }
+
+    /deep/ .expression::after {
+      content: ' )';
+      width: 10px;
+      text-align: center;
+      // position: absolute;
+      // margin-left: 10px;
+      // top: 0;
+      padding-bottom: 5px;
+      display: inline-block;
+    }
+
+    /deep/ .dialog {
+      padding: 0 140px 14px;
+    }
+
+    /deep/ .monologue {
+      font-style: italic;
+      padding: 0 140px 14px;
+    }
+
+    /deep/ .condition {
+      padding: 0 42px 14px;
+      font-weight: bold;
+      color: #9191fd;
+      // text-transform: uppercase;
+    }
+  }
+
+
+  /deep/ .el-input__inner {
+    outline: none;
+  }
+
+  /deep/ span {
+    background-color: transparent !important;
+  }
+
+  // /deep/ b {
+  //   background-color: transparent !important;
+  // }
+
+  /deep/ i {
+    background-color: transparent !important;
+  }
+
+  /deep/ u {
+    background-color: transparent !important;
+  }
+}
+
+@media screen and (min-width:1600px) {
+  .build-drama-page {
+    .content {
+      .content-center {
+        grid-template-columns: auto 232px;
+      }
+    }
+  }
+
+}

@@ -1,0 +1,92 @@
+// new-less
+.login {
+  display: flex;
+  align-items: center;
+  height: 100vh;
+  .lang-select {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    font-size: 14px;
+  }
+
+  .login-content {
+    width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .login-img {
+      width: 600px;
+      height: 620px;
+    }
+  }
+}
+
+.login-form-wrap {
+  width: 470px;
+  .welcome-back {
+    font-size: 70px;
+    font-weight: 600;
+    color: #212121;
+    text-align: left;
+    line-height: 80px;
+    margin-bottom: 40px;
+  }
+  .form-content {
+    /deep/.el-input__inner {
+      background-color: #F5F5F5 !important;
+      border-radius: 4px;
+      width: 470px;
+      height: 75px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #191919;
+      border: none;
+      padding: 0 40px;
+    }
+    /deep/.el-input__clear {
+      font-size: 20px;
+    }
+    /deep/.el-input__icon {
+      width: 40px;
+    }
+    /deep/ .el-form-item {
+      margin-bottom: 32px;
+    }
+    /deep/.el-form-item__error {
+      font-size: 16px;
+      padding-top: 5px;
+    }
+    /deep/.el-button--primary {
+      width: 470px;
+      height: 75px;
+      color: #FFF;
+      background-color: #59D298;
+      border-color: #59D298;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    /deep/.el-button--primary:focus, .el-button--primary:hover {
+      background-color: #74d4a4;
+      border-color: #9ed9bf;
+      color: #FFF;
+    }
+  }
+  .other-msg {
+    text-align: left;
+    cursor: pointer;
+    font-size: 18px;
+    color: #8C8C8C;
+    /deep/.el-divider--vertical {
+      margin: 0 20px;
+    }
+    span {
+      transition: color .5s;
+      &:hover {
+        color: #74d4a4;
+      }
+    }
+  }
+}
+
