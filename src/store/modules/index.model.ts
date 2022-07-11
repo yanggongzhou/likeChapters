@@ -1,6 +1,7 @@
 import { IBiographyForm, IBiographyList } from "@/api/characterCenter";
 import { ITemplate, TemplateTypeEnum } from "@/store/modules/result.model";
 import { EBoolean } from "@/interfaces/common.interfaces";
+import { LookTypeEnum, MaterialTypeEnum } from "@/interfaces/material.interfaces";
 
 // user
 export interface IUserState {
@@ -44,20 +45,9 @@ export enum ClothTypeEnum {
   jewelry = 'JEWELRY'
 }
 
-export enum MaterialTypeEnum {
-  look = 'LOOK',
-  background = 'BG',
-  bgm = 'BGM',
-}
-
-export enum MaterialTwoTypeEnum {
-  body = 'BODY',
-}
-
 export interface IMaterialVOS {
-  id: string | number;
-  materialType: ClothTypeEnum;
-  materialTypeName?: string;
+  id?: string;
+  lookType: LookTypeEnum;
   materialUrl: string;
 }
 
@@ -66,35 +56,20 @@ export interface ICharacterDetail extends IBiographyForm {
 }
 
 export interface IStyles {
-  id?: string | number;
-  biographyId: string | number;
+  id?: string;
   defaultStyle: EBoolean;
-  material?: string;
+  materialName?: string;
   materialVOS?: IMaterialVOS[];
-}
-
-export interface ITypeTwos {
-  id: number;
-  name: string;
-  oneTypeId: number;
-  threeTypes: {id: number; name: string; oneTypeId: number; twoTypeId: number}[]
-}
-
-export interface ITypeData {
-  id: number;
-  name: string;
-  typeTwos?: ITypeTwos[]
 }
 
 export interface ICharacterCenterState {
   isShowStyleManagement: boolean;
-  clothType: ClothTypeEnum;
+  lookType: LookTypeEnum;
   materialType: MaterialTypeEnum;
   selectStyleItem: IStyles;
   characterDetail: ICharacterDetail;
   bgm: string | number;
   background: string | number;
-  typeData: ITypeData[];
   materialVOS: any;
 }
 

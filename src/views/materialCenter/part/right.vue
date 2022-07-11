@@ -40,10 +40,10 @@ import BgmContent from '@/views/materialCenter/part/bgm.vue'
 import LookContent from '@/views/materialCenter/part/look.vue'
 import { useI18n } from "vue-i18n";
 import { useRouter, useRoute } from "vue-router";
-import { MaterialTypeEnum } from "@/store/modules/index.model";
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { ListClothStyle } from "@/api/characterCenter";
 import { CharacterCenterModule } from "@/store/modules/characterCenter";
+import { MaterialTypeEnum } from "@/interfaces/material.interfaces";
 const dataSource = ref()
 const getClothStyleList = async () => {
   const { materialVOS } = await ListClothStyle()

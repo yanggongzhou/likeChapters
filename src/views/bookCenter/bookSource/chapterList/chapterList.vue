@@ -64,7 +64,7 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const visible = ref<boolean>(false)
-const bookId = computed(() => route.query?.bookId)
+const bookId = computed(() => route.query?.bookId as string)
 const columnClick = (row: IChapterParams, property: string) => {
   if (property === 'chapterName' || property === 'chapterIntro') {
     const { id, bookId } = row
@@ -99,20 +99,21 @@ const chapterColumns: ICustomTableColumn[] = [
 const createChapter = () => {
   visible.value = true
   chapterForm.id = void 0
-  chapterForm.bookId = bookId.value as string
+  chapterForm.bookId = bookId.value
   chapterForm.chapterName = ''
   chapterForm.chapterIntro = ''
 }
 const editChapter = (row: IChapterParams) => {
   visible.value = true
   chapterForm.id = row.id
-  chapterForm.bookId = bookId.value as string
+  chapterForm.bookId = bookId.value
   chapterForm.chapterName = row.chapterName
   chapterForm.chapterIntro = row.chapterIntro || ''
 }
 
 const chapterForm = reactive<IChapterParams>({
   id: void 0,
+  bookId: bookId.value,
   chapterName: '',
   chapterIntro: ''
 })
@@ -120,18 +121,17 @@ const chapterForm = reactive<IChapterParams>({
 const onConfirm = async (characterForm: IChapterParams) => {
   visible.value = false;
   if (characterForm.id) {
-    await EditChapter({ ...characterForm, bookId: bookId.value as string })
+    await EditChapter(characterForm)
   } else {
-    await AddChapter({ ...characterForm, bookId: bookId.value as string })
+    await AddChapter(characterForm)
   }
   await chapterData.getListChapter()
 }
 
 const chapterData = reactive({
-  chapterList: [],
+  chapterList: [] as IChapterParams[],
   getListChapter: async () => {
-    const { bookId } = route.query
-    chapterData.chapterList = await ListChapter(bookId as string);
+    chapterData.chapterList = await ListChapter(bookId.value);
   }
 })
 
@@ -140,8 +140,9 @@ const goChoreographer = (row: any) => {
   router.push({ name: 'choreographer', query: { bookId, chapterId: id } })
 }
 
-const deleteChapter = (id: string) => {
-  DeleteChapter(id)
+const deleteChapter = async (id: string) => {
+  await DeleteChapter(id)
+  await chapterData.getListChapter()
 }
 
 onMounted(() => {

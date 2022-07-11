@@ -20,7 +20,7 @@
       <el-form :model="characterForm" :rules="rules" ref="characterFormRef" label-width="120px" class="form-content">
         <el-form-item :label="t('bookSource.characterName')" prop="biographyName">
           <el-input
-              v-model="characterForm.biographyName"
+              v-model="characterForm.characterName"
               :placeholder="t('bookSource.characterName')"
               show-word-limit
               :maxlength="50"
@@ -29,7 +29,7 @@
         </el-form-item>
         <el-form-item :label="t('bookSource.characterIntro')">
           <el-input
-              v-model="characterForm.biographyIntro"
+              v-model="characterForm.characterIntro"
               :autosize="{ minRows: 10, maxRows: 16 }"
               type="textarea"
               show-word-limit
@@ -60,31 +60,31 @@
 import Avatar from '@/components/avatar/avatar.vue'
 import { reactive, ref, defineProps, defineEmits, PropType, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n';
-import { IBiographyForm, SexType } from '@/api/characterCenter';
 import { IStyles } from "@/store/modules/index.model";
 import { EBoolean } from "@/interfaces/common.interfaces";
 import { FormInstance } from "@/main";
+import { ICharacterParams, SexType } from "@/interfaces/character.interfaces";
 const { t } = useI18n()
 const props = defineProps({
   visible: Boolean,
-  form: Object as PropType<IBiographyForm>,
+  form: Object as PropType<ICharacterParams>,
   selectStyleItem: Object as PropType<IStyles>
 })
 const emits = defineEmits([ 'close', 'confirm' ])
 const characterFormRef = ref<FormInstance>()
-const characterForm = ref({} as IBiographyForm)
+const characterForm = ref({} as ICharacterParams)
 
 watch(() => props.form, (val) => {
-  characterForm.value = {} as IBiographyForm;
-  characterForm.value = val as IBiographyForm;
+  characterForm.value = {} as ICharacterParams;
+  characterForm.value = val as ICharacterParams;
 }, { deep: true })
 
 onMounted(() => {
-  characterForm.value = props.form as IBiographyForm;
+  characterForm.value = props.form as ICharacterParams;
 })
 
 const rules = reactive({
-  biographyName: [ { required: true, message: () => t('bookSource.characterNameRuleMsg'), trigger: 'blur' } ]
+  characterName: [ { required: true, message: () => t('bookSource.characterNameRuleMsg'), trigger: 'blur' } ]
 })
 
 const onConfirm = () => {

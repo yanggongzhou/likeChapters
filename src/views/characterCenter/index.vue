@@ -19,6 +19,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute } from "vue-router";
 import { CharacterCenterModule } from "@/store/modules/characterCenter";
 import { EBoolean } from "@/interfaces/common.interfaces";
+import { ListMaterial } from "@/api/material";
 
 const route = useRoute()
 const dataSource = ref()
@@ -59,13 +60,12 @@ const getMaterialId = () => {
   return ids.join(',');
 }
 
-const getClothStyleList = async () => {
-  const { materialVOS } = await ListClothStyle()
-  dataSource.value = materialVOS
+const getMaterialList = async () => {
+  dataSource.value = await ListMaterial({ typeOne: '1', typeTwo: '2' })
 }
 
 onMounted(() => {
-  getClothStyleList()
+  getMaterialList()
   getCharacterDetail()
 })
 

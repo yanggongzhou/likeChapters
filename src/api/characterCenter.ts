@@ -1,6 +1,6 @@
 import Service from '@/utils/request';
 import { EBoolean } from "@/interfaces/common.interfaces";
-import { ICharacterListItem, ICharacterParams } from "@/interfaces/character.interfaces";
+import { ICharacterListItem, ICharacterParams, SexType } from "@/interfaces/character.interfaces";
 
 export interface IBiographyForm {
   id?: string | number;
@@ -38,13 +38,12 @@ export const ListCharacter = async (bookId: string): Promise<ICharacterListItem[
  * @param id 角色id
  */
 export const DeleteCharacter = async (id: string) => {
-  return await Service.delete('/chapter/delete', { params: { id } })
+  return await Service.delete('/character/delete', { params: { id } })
 }
 
 /**
  * 获取素材
  */
-
 export const ListClothStyle = async () => {
   return await Service.post('/script-editor/entry/4019')
 }
@@ -80,25 +79,6 @@ export const EditStyle = async ({ id, biographyId, styleName, defaultStyle, mate
   return await Service.post('/script-editor/entry/4022', { id, biographyId, styleName, defaultStyle, material })
 }
 
-/**
- * 查询
- * @param id 风格ID
- */
-export const GetCharacterDetail = async (id: string) => {
-  return await Service.post('/script-editor/entry/4020', { id })
-}
-
-export enum SexType {
-  boy = 1,
-  girl = 2
-}
-
-export enum BiographyTypeEnum {
-  character = '1',
-  scene = '2'
-}
-
-
 
 export interface IBiographyList {
   id: string | number;
@@ -119,4 +99,12 @@ export const ListScene = async (bookId: string) => {
  */
 export const EditScene = async (param: IBiographyForm) => {
   return await Service.post('/script-editor/entry/4039', { ...param })
+}
+
+/**
+ * 查询
+ * @param id 角色详情ID
+ */
+export const DetailCharacter = async (id: string) => {
+  return await Service.get('/character/detail', { params: { id } })
 }
