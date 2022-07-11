@@ -10,8 +10,8 @@
             v-for="val in list"
             :url="val.materialUrl"
             :key="val.id"
-            :size="[ClothTypeEnum.faceType, ClothTypeEnum.hair, ClothTypeEnum.jewelry].indexOf(val.materialType) !==-1 ? 'small' : 'default' "
-            :isChecked="isChecked === val.materialUrl"
+            :size="[LookTypeEnum.emotion, LookTypeEnum.hair, LookTypeEnum.backext].indexOf(val.lookType) !==-1 ? 'small' : 'default' "
+            :isChecked="isChecked === val.id"
             @click="selectCloth(val)"></ClothItem>
       </div>
     </div>
@@ -29,27 +29,25 @@ import ClothType from './clothType.vue'
 import ClothItem from './clothItem.vue'
 import { CharacterCenterModule } from "@/store/modules/characterCenter";
 import { useI18n } from "vue-i18n";
-import { ClothTypeEnum } from "@/store/modules/index.model";
+import { LookTypeEnum } from "@/interfaces/material.interfaces";
 
 const { t } = useI18n()
 const emits = defineEmits([ 'onSave', 'onCancel' ])
 
-const activeName = computed(() => CharacterCenterModule.clothType)
 const props = defineProps({
   dataSource: Object
 })
-const list = computed(() => props.dataSource?.[activeName.value] || [])
+
+const list = computed(() => props.dataSource?.filter(val => val.lookType === CharacterCenterModule.lookType) || [])
+
 const isChecked = computed(() => {
-  if (CharacterCenterModule.selectStyleItem.materialVOS && CharacterCenterModule.selectStyleItem.materialVOS.length > 0) {
-    const data = CharacterCenterModule.selectStyleItem.materialVOS.filter(val => val.materialType === CharacterCenterModule.clothType)
-    return data.length > 0 ? data[0].materialUrl : ''
-  }
-  return ''
+  return CharacterCenterModule.dressUpItem?.[LookTypeEnum[CharacterCenterModule.lookType]]?.id || ''
 })
 
 const selectCloth = ({ id, materialUrl }: { id: number, materialUrl: string }) => {
-  CharacterCenterModule.SetSelectStyleItem({ id, url: materialUrl })
+  CharacterCenterModule.SetDressUpItem({ id, url: materialUrl })
 }
+
 </script>
 
 <style lang="less" scoped>

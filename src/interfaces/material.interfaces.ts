@@ -1,14 +1,16 @@
 export interface IMaterialListItem {
   id: string;
   materialName: string;
-  materialType: string;
+  materialType: MaterialTypeEnum;
+  lookType: LookTypeEnum;
   materialUrl: string;
 }
 
 export interface IMaterialParams {
   id?: string;
-  materialName: string;
-  materialType: string;
+  materialName?: string;
+  materialType: MaterialTypeEnum;
+  lookType: LookTypeEnum;
   materialUrl: string;
 }
 
@@ -24,4 +26,9 @@ export enum LookTypeEnum {
   hair = 'HAIR',
   cloth = 'CLOTH',
   backext = 'BACKEXT',
+  SKIN = 'skin',
+  EMOTION = 'emotion',
+  HAIR = 'hair',
+  CLOTH = 'cloth',
+  BACKEXT = 'backext',
 }

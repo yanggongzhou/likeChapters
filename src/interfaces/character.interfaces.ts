@@ -7,7 +7,7 @@ export interface ICharacterListItem {
   characterIntro?: string;
   sex: SexType;
   mainCharacter: EBoolean;
-  dressUp?: IDressUp;
+  dressUp?: IDressUpItem[];
 }
 
 export interface ICharacterParams {
@@ -29,7 +29,10 @@ interface ISkin {
   url: string;
 }
 
-export interface IDressUp {
+export interface IDressUpItem {
+  id: string;
+  name: string;
+  isDefault: EBoolean;
   skin?: ISkin;
   cloth?: ISkin;
   emotion?: ISkin;

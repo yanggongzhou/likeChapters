@@ -13,9 +13,9 @@
     </template>
     <div class="edit-character-content">
 
-      <el-empty v-if="!selectStyleItem" :description="t('common.noData')"></el-empty>
+      <el-empty v-if="!dressUpItem" :description="t('common.noData')"></el-empty>
       <div v-else class="preview-content">
-        <Avatar :width="160" :dataSource="selectStyleItem"/>
+        <Avatar :width="160" :dataSource="dressUpItem"/>
       </div>
       <el-form :model="characterForm" :rules="rules" ref="characterFormRef" label-width="120px" class="form-content">
         <el-form-item :label="t('bookSource.characterName')" prop="biographyName">
@@ -60,15 +60,14 @@
 import Avatar from '@/components/avatar/avatar.vue'
 import { reactive, ref, defineProps, defineEmits, PropType, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n';
-import { IStyles } from "@/store/modules/index.model";
 import { EBoolean } from "@/interfaces/common.interfaces";
 import { FormInstance } from "@/main";
-import { ICharacterParams, SexType } from "@/interfaces/character.interfaces";
+import { ICharacterParams, IDressUpItem, SexType } from "@/interfaces/character.interfaces";
 const { t } = useI18n()
 const props = defineProps({
   visible: Boolean,
   form: Object as PropType<ICharacterParams>,
-  selectStyleItem: Object as PropType<IStyles>
+  dressUpItem: Object as PropType<IDressUpItem>
 })
 const emits = defineEmits([ 'close', 'confirm' ])
 const characterFormRef = ref<FormInstance>()

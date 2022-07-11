@@ -82,8 +82,8 @@ defineProps({
   .front-cover {
     width: 300px;
     position: absolute;
-    top: -55px;
-    left: -73px;
+    top: -100px;
+    left: -82px;
     height: auto;
   }
 }

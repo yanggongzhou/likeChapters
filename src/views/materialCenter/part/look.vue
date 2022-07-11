@@ -10,7 +10,7 @@
             v-for="val in list"
             :url="val.materialUrl"
             :key="val.id"
-            :size="[ClothTypeEnum.faceType, ClothTypeEnum.hair, ClothTypeEnum.jewelry].indexOf(val.materialType) !==-1 ? 'small' : 'default' "
+            :size="[LookTypeEnum.emotion, LookTypeEnum.hair, LookTypeEnum.backext].indexOf(val.lookType) !==-1 ? 'small' : 'default' "
             :isChecked="isChecked === val.materialUrl"
             @click="selectCloth(val)"></ClothItem>
       </div>
@@ -29,8 +29,7 @@ import ClothType from '@/views/characterCenter/clothStyle/clothType.vue'
 import ClothItem from '@/views/characterCenter/clothStyle/clothItem.vue'
 import { CharacterCenterModule } from "@/store/modules/characterCenter";
 import { useI18n } from "vue-i18n";
-import { ClothTypeEnum } from "@/store/modules/index.model";
-
+import { LookTypeEnum } from "@/interfaces/material.interfaces";
 const { t } = useI18n()
 const emits = defineEmits([ 'onSave', 'onCancel' ])
 
@@ -44,15 +43,15 @@ const props = defineProps({
 })
 const list = computed(() => props.dataSource?.[activeName.value] || [])
 const isChecked = computed(() => {
-  if (CharacterCenterModule.selectStyleItem.materialVOS && CharacterCenterModule.selectStyleItem.materialVOS.length > 0) {
-    const data = CharacterCenterModule.selectStyleItem.materialVOS.filter(val => val.materialType === CharacterCenterModule.clothType)
+  if (CharacterCenterModule.dressItem.materialVOS && CharacterCenterModule.dressItem.materialVOS.length > 0) {
+    const data = CharacterCenterModule.dressItem.materialVOS.filter(val => val.materialType === CharacterCenterModule.clothType)
     return data.length > 0 ? data[0].materialUrl : ''
   }
   return ''
 })
 
 const selectCloth = ({ id, materialUrl }: { id: number, materialUrl: string }) => {
-  CharacterCenterModule.SetSelectStyleItem({ id, url: materialUrl })
+  CharacterCenterModule.SetDressUpItem({ id, url: materialUrl })
 }
 </script>
 

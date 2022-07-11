@@ -31,21 +31,21 @@
 import Avatar from '@/components/avatar/avatar.vue'
 import { CharacterCenterModule } from "@/store/modules/characterCenter";
 import { computed } from "vue";
-import { IStyles } from "@/store/modules/index.model";
 import { useI18n } from "vue-i18n";
+import { IDressUpItem } from "@/interfaces/character.interfaces";
 
 const { t } = useI18n()
 const addAvatar = () => {
   CharacterCenterModule.ResetCharacterCenter()
   CharacterCenterModule.SetIsShowStyleManagement(false)
 }
-const editAvatar = (item: IStyles) => {
+const editAvatar = (item: IDressUpItem) => {
   CharacterCenterModule.ReplaceStyleItem(item);
   CharacterCenterModule.SetIsShowStyleManagement(false)
 }
 const styleData = computed(() => CharacterCenterModule.characterDetail.styles)
 
-const avatarSelect = (item: IStyles) => {
+const avatarSelect = (item: IDressUpItem) => {
   CharacterCenterModule.ReplaceStyleItem(item);
 }
 </script>

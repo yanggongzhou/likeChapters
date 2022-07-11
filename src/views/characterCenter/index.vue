@@ -1,6 +1,7 @@
 <template>
   <div class="character-center">
     <div class="preview">
+      <EditMaterialDialog></EditMaterialDialog>
       <Preview></Preview>
     </div>
     <ClothStyle v-if="!isShowStyleManagement" :dataSource="dataSource" @onSave="onSave" @onCancel="onCancel"></ClothStyle>
@@ -11,15 +12,17 @@
 </template>
 
 <script lang="ts" setup>
+import EditMaterialDialog from "@/views/characterCenter/editMaterial";
 import StyleManagement from './styleManagement/styleManagement.vue'
 import ClothStyle from './clothStyle/clothStyle.vue'
 import Preview from './preview/preview.vue'
-import { AddStyle, EditStyle, ListClothStyle } from '@/api/characterCenter.ts';
+import { AddCharacterLook, EditCharacterLook } from '@/api/characterCenter.ts';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRoute } from "vue-router";
 import { CharacterCenterModule } from "@/store/modules/characterCenter";
 import { EBoolean } from "@/interfaces/common.interfaces";
 import { ListMaterial } from "@/api/material";
+import { MaterialTypeEnum } from "@/interfaces/material.interfaces";
 
 const route = useRoute()
 const dataSource = ref()
@@ -34,21 +37,22 @@ const onCancel = () => {
 }
 
 const onSave = async () => {
-  const { id } = CharacterCenterModule.selectStyleItem
+  const { id } = CharacterCenterModule.dressUpItem
   if (id) {
-    await EditStyle({
-      id,
-      biographyId: route.query.characterId as string,
-      material: getMaterialId() as string,
-      styleName: 'Default Style',
-      defaultStyle: CharacterCenterModule.characterDetail.styles.length > 0 ? EBoolean.no : EBoolean.yes
+    await EditCharacterLook({
+      id: route.query.characterId as string,
+      dressUpItem: {
+        ...CharacterCenterModule.dressUpItem,
+        isDefault: CharacterCenterModule.characterDetail.dressUp.length > 0 ? EBoolean.no : EBoolean.yes,
+      }
     })
   } else {
-    await AddStyle({
-      biographyId: route.query.characterId as string,
-      material: getMaterialId() as string,
-      styleName: 'Default Style',
-      defaultStyle: CharacterCenterModule.characterDetail.styles.length > 0 ? EBoolean.no : EBoolean.yes
+    await AddCharacterLook({
+      id: route.query.characterId as string,
+      dressUpItem: {
+        ...CharacterCenterModule.dressUpItem,
+        isDefault: CharacterCenterModule.characterDetail.dressUp.length > 0 ? EBoolean.no : EBoolean.yes,
+      }
     })
   }
   CharacterCenterModule.SetIsShowStyleManagement(true)
@@ -56,12 +60,12 @@ const onSave = async () => {
 }
 
 const getMaterialId = () => {
-  const ids = CharacterCenterModule.selectStyleItem.materialVOS.map(val => val.id);
+  const ids = CharacterCenterModule.dressUpItem.materialVOS.map(val => val.id);
   return ids.join(',');
 }
 
 const getMaterialList = async () => {
-  dataSource.value = await ListMaterial({ typeOne: '1', typeTwo: '2' })
+  dataSource.value = await ListMaterial({ materialType: MaterialTypeEnum.look })
 }
 
 onMounted(() => {
@@ -93,6 +97,7 @@ onUnmounted(() => {
     box-shadow: 0 1px 4px #00152914;
     border-radius: 10px;
     background-color: #ffffff;
+    position: relative;
   }
 }
 </style>

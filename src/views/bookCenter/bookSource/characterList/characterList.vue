@@ -37,7 +37,7 @@
         @close="visible = false"
         @confirm="onConfirm"
         :form="characterForm"
-        :selectStyleItem="selectStyleItem"
+        :dressUpItem="dressUpItem"
     ></EditCharacterDialog>
   </div>
 </template>
@@ -52,16 +52,15 @@ import {
   EditCharacter,
   DetailCharacter,
 } from "@/api/characterCenter";
-import { IStyles } from "@/store/modules/index.model";
 import { EBoolean } from "@/interfaces/common.interfaces";
 import { GSEditorModule } from "@/store/modules/gsEditor";
-import { ICharacterListItem, ICharacterParams, SexType } from "@/interfaces/character.interfaces";
+import { ICharacterListItem, ICharacterParams, IDressUpItem, SexType } from "@/interfaces/character.interfaces";
 
 const { t } = useI18n()
 const visible = ref<boolean>(false)
 const route = useRoute()
 const router = useRouter()
-const selectStyleItem = ref<IStyles | undefined>()
+const dressUpItem = ref<IDressUpItem | undefined>()
 const bookId = computed(() => route.query.bookId as string)
 const characterForm = reactive<ICharacterParams>({
   id: void 0,
@@ -78,7 +77,7 @@ const createCharacter = () => {
   characterForm.characterIntro = ''
   characterForm.sex = SexType.boy
   characterForm.mainCharacter = EBoolean.no
-  selectStyleItem.value = undefined
+  dressUpItem.value = undefined
   visible.value = true
 }
 const editCharacter = async (obj: ICharacterParams) => {
@@ -88,10 +87,10 @@ const editCharacter = async (obj: ICharacterParams) => {
   characterForm.characterIntro = obj.characterIntro || ''
   characterForm.sex = obj.sex || SexType.boy
   characterForm.mainCharacter = obj.mainCharacter || EBoolean.no
-  selectStyleItem.value = undefined
+  dressUpItem.value = undefined
   // const res: ICharacterDetail = await DetailCharacter(obj.id)
   // if (res?.styles.length > 0) {
-  //   selectStyleItem.value = res.styles[0]
+  //   dressUpItem.value = res.styles[0]
   // }
 }
 

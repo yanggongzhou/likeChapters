@@ -2,6 +2,7 @@ import { IBiographyForm, IBiographyList } from "@/api/characterCenter";
 import { ITemplate, TemplateTypeEnum } from "@/store/modules/result.model";
 import { EBoolean } from "@/interfaces/common.interfaces";
 import { LookTypeEnum, MaterialTypeEnum } from "@/interfaces/material.interfaces";
+import { ICharacterListItem, IDressUpItem } from "@/interfaces/character.interfaces";
 
 // user
 export interface IUserState {
@@ -35,39 +36,12 @@ export enum HomeNavActiveType {
   choreographerCenter = '3'
 }
 
-// characterCenter
-export enum ClothTypeEnum {
-  body = 'BODY',
-  skin = 'SKIN',
-  faceType = 'FACETYPE',
-  hair = 'HAIR',
-  clothes = 'CLOTHES',
-  jewelry = 'JEWELRY'
-}
-
-export interface IMaterialVOS {
-  id?: string;
-  lookType: LookTypeEnum;
-  materialUrl: string;
-}
-
-export interface ICharacterDetail extends IBiographyForm {
-  styles: IStyles[]
-}
-
-export interface IStyles {
-  id?: string;
-  defaultStyle: EBoolean;
-  materialName?: string;
-  materialVOS?: IMaterialVOS[];
-}
-
 export interface ICharacterCenterState {
   isShowStyleManagement: boolean;
   lookType: LookTypeEnum;
   materialType: MaterialTypeEnum;
-  selectStyleItem: IStyles;
-  characterDetail: ICharacterDetail;
+  dressUpItem: IDressUpItem;
+  characterDetail: ICharacterListItem;
   bgm: string | number;
   background: string | number;
   materialVOS: any;

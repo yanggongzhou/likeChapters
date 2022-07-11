@@ -6,7 +6,7 @@
     <div class="preview-content">
       <Avatar
         :width="250"
-        :data-source="selectStyleItem"
+        :data-source="dressUpItem"
       ></Avatar>
     </div>
   </div>
@@ -21,7 +21,7 @@ const router = useRouter()
 const goBack = () => {
   router.go(-1)
 }
-const selectStyleItem = computed(() => CharacterCenterModule.selectStyleItem)
+const dressUpItem = computed(() => CharacterCenterModule.dressUpItem)
 </script>
 
 <style lang="less" scoped>

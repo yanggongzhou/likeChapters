@@ -1,6 +1,6 @@
 import Service from '@/utils/request';
 import { EBoolean } from "@/interfaces/common.interfaces";
-import { ICharacterListItem, ICharacterParams, SexType } from "@/interfaces/character.interfaces";
+import { ICharacterListItem, ICharacterParams, IDressUpItem, SexType } from "@/interfaces/character.interfaces";
 
 export interface IBiographyForm {
   id?: string | number;
@@ -39,6 +39,27 @@ export const ListCharacter = async (bookId: string): Promise<ICharacterListItem[
  */
 export const DeleteCharacter = async (id: string) => {
   return await Service.delete('/character/delete', { params: { id } })
+}
+
+/**
+ * 新增风格
+ * @param id 角色ID
+ * @param dressUpItem 风格名称
+ */
+export const AddCharacterLook = async ({ id, dressUpItem }: { id: string, dressUpItem: IDressUpItem }) => {
+  return await Service.post('/character/look/save', { id, dressUpItem })
+}
+
+/**
+ * 修改
+ * @param id 风格ID
+ * @param biographyId: 角色Id
+ * @param styleName 风格名称
+ * @param defaultStyle 是否默认风格 0 1
+ * @param material 角色id 逗号分割
+ */
+export const EditCharacterLook = async ({ id, dressUpItem }: { id: string, dressUpItem: IDressUpItem }) => {
+  return await Service.post('/character/look/edit', { id, dressUpItem })
 }
 
 /**

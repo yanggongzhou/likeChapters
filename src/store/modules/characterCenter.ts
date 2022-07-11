@@ -4,11 +4,12 @@
  */
 import { Action, getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import store from '@/store'
-import { ICharacterCenterState, ICharacterDetail, IStyles } from '@/store/modules/index.model';
+import { ICharacterCenterState } from '@/store/modules/index.model';
 import { DetailCharacter } from "@/api/characterCenter";
 import { ListMaterial } from "@/api/material";
 import { EBoolean } from "@/interfaces/common.interfaces";
 import { LookTypeEnum, MaterialTypeEnum } from "@/interfaces/material.interfaces";
+import { ICharacterListItem, IDressUpItem } from "@/interfaces/character.interfaces";
 
 @Module({
   dynamic: true,
@@ -31,21 +32,19 @@ class CharacterCenter extends VuexModule implements ICharacterCenterState {
   public background = '';
 
   // 服装选项组合
-  public selectStyleItem = {
+  public dressUpItem = {
     id: '',
-    defaultStyle: EBoolean.no,
-    materialName: '',
-    materialVOS: [
-      { id: '', lookType: LookTypeEnum.skin, materialUrl: '', },
-      { id: '', lookType: LookTypeEnum.emotion, materialUrl: '', },
-      { id: '', lookType: LookTypeEnum.hair, materialUrl: '', },
-      { id: '', lookType: LookTypeEnum.cloth, materialUrl: '', },
-      { id: '', lookType: LookTypeEnum.backext, materialUrl: '', },
-    ],
+    isDefault: EBoolean.no,
+    name: '',
+    skin: { id: '', url: '', },
+    cloth: { id: '', url: '', },
+    emotion: { id: '', url: '', },
+    hair: { id: '', url: '', },
+    backext: { id: '', url: '', },
   }
 
   // 角色详情
-  public characterDetail = {} as ICharacterDetail
+  public characterDetail = {} as ICharacterListItem
 
   @Mutation
   private SET_MATERIALVOS (materialVOS: any) {
@@ -81,7 +80,7 @@ class CharacterCenter extends VuexModule implements ICharacterCenterState {
   }
 
   @Mutation
-  private SET_CHARACTERDETAIL(res: ICharacterDetail) {
+  private SET_CHARACTERDETAIL(res: ICharacterListItem) {
     this.characterDetail = { ...res }
   }
 
@@ -91,24 +90,19 @@ class CharacterCenter extends VuexModule implements ICharacterCenterState {
   }
 
   @Mutation
-  private SET_SELECTSTYLEITEM({ id, url }: { id: string, url: string }) {
-    if (!this.selectStyleItem.materialVOS) this.selectStyleItem.materialVOS = []
+  private SET_DRESSUPITEM({ id, url }: { id: string, url: string }) {
+    console.log('this.dressUpItem[LookTypeEnum[this.lookType]]', LookTypeEnum[this.lookType],this.dressUpItem[LookTypeEnum[this.lookType]])
     // 再次点击清空
-    const index = this.selectStyleItem.materialVOS.findIndex(val => (val.lookType === this.lookType))
-    if (index !== -1 && id === this.selectStyleItem.materialVOS[index]?.id) {
-      this.selectStyleItem.materialVOS[index] = { ...this.selectStyleItem.materialVOS[index], id: '', materialUrl: '' }
+    if (this.dressUpItem[LookTypeEnum[this.lookType]]?.id) {
+      this.dressUpItem[LookTypeEnum[this.lookType]] = { id: '', url: '' }
     } else {
-      if (index !== -1) {
-        this.selectStyleItem.materialVOS[index] = { ...this.selectStyleItem.materialVOS[index], id, materialUrl: url }
-      } else {
-        this.selectStyleItem.materialVOS.push({ id, lookType: this.lookType, materialUrl: url });
-      }
+      this.dressUpItem[LookTypeEnum[this.lookType]] = { id, url }
     }
   }
 
   @Mutation // 角色风格点击切换
-  private REPLACE_STYLEITEM(item: IStyles) {
-    this.selectStyleItem = JSON.parse(JSON.stringify(item));
+  private REPLACE_STYLEITEM(item: IDressUpItem) {
+    this.dressUpItem = JSON.parse(JSON.stringify(item));
   }
 
   @Action // 素材类型
@@ -123,16 +117,17 @@ class CharacterCenter extends VuexModule implements ICharacterCenterState {
 
   @Action // 设置当前服装选项
   public SetLookType(lookType: LookTypeEnum) {
+    console.log('lookType----------------------------->', LookTypeEnum)
     this.SET_LOOKTYPE(lookType)
   }
 
   @Action({ rawError: true }) // 设置服装选项组合
-  public SetSelectStyleItem({ id, url }: { id: string, url: string }) {
-    this.SET_SELECTSTYLEITEM({ id, url })
+  public SetDressUpItem({ id, url }: { id: string, url: string }) {
+    this.SET_DRESSUPITEM({ id, url })
   }
 
   @Action // 设置服装选项组合
-  public ReplaceStyleItem(item: IStyles) {
+  public ReplaceStyleItem(item: IDressUpItem) {
     this.REPLACE_STYLEITEM(item)
   }
 
@@ -140,11 +135,11 @@ class CharacterCenter extends VuexModule implements ICharacterCenterState {
   public async SetCharacterDetail({ characterId, isMounted }: { characterId: string, isMounted: boolean }) {
     const res = await DetailCharacter(characterId)
     this.SET_CHARACTERDETAIL(res)
-    if (res.styles && res.styles.length > 0) {
-      this.ReplaceStyleItem(res.styles[0]);
+    if (res.dressUp && res.dressUp.length > 0) {
+      this.ReplaceStyleItem(res.dressUp[0]);
     }
     if (isMounted) {
-      this.SET_ISSHOWSTYLEMANAGEMENT(res.styles && res.styles.length > 0)
+      this.SET_ISSHOWSTYLEMANAGEMENT(res.dressUp && res.dressUp.length > 0)
     }
   }
 
@@ -154,25 +149,23 @@ class CharacterCenter extends VuexModule implements ICharacterCenterState {
   }
 
   @Mutation
-  private RESET_SELECTSTYLEITEM() {
-    this.selectStyleItem = {
+  private RESET_DRESSUPITEM() {
+    this.dressUpItem = {
       id: '',
-      defaultStyle: EBoolean.no,
-      materialName: '',
-      materialVOS: [
-        { id: '', lookType: LookTypeEnum.skin, materialUrl: '', },
-        { id: '', lookType: LookTypeEnum.emotion, materialUrl: '', },
-        { id: '', lookType: LookTypeEnum.hair, materialUrl: '', },
-        { id: '', lookType: LookTypeEnum.cloth, materialUrl: '', },
-        { id: '', lookType: LookTypeEnum.backext, materialUrl: '', },
-      ],
+      isDefault: EBoolean.no,
+      name: '',
+      skin: { id: '', url: '', },
+      cloth: { id: '', url: '', },
+      emotion: { id: '', url: '', },
+      hair: { id: '', url: '', },
+      backext: { id: '', url: '', },
     }
   }
 
   @Action
   public ResetCharacterCenter() {
     this.RESET_LOOKTYPE()
-    this.RESET_SELECTSTYLEITEM()
+    this.RESET_DRESSUPITEM()
   }
 
   @Action // BGM
@@ -188,7 +181,6 @@ class CharacterCenter extends VuexModule implements ICharacterCenterState {
   @Action //
   public async Init() {
     const data = await ListMaterial({ materialType: MaterialTypeEnum.look })
-    console.log('materialVOS------------------------>', data)
     this.SET_MATERIALVOS(data);
   }
 
