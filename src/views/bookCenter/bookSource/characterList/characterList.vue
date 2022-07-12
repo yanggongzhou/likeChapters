@@ -6,13 +6,13 @@
       </div>
 
       <ul class="list-box" v-if="characterList.length > 0">
-        <li v-for="value in characterList" :key="value.id" class="list-item" @click="goCharacterCenter(value.id , value.bookId)">
-          <el-avatar :size="50"
-                     :src="value.biographyImg || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'">
-          </el-avatar>
+        <li v-for="value in characterList" :key="value.id" class="list-item"
+            @click="goCharacterCenter(value.id , value.bookId)">
+          <ListAvatar :data-source="value?.dressUp?.[0]"></ListAvatar>
           <div class="character-name">
             <i v-if="value.mainCharacter === EBoolean.yes" class="gs-font gs-zhujiaose-"></i>
-            <i class="gs-font" :class="{'gs-nanxing': value.sex === SexType.boy, 'gs-nvxing': value.sex === SexType.girl}"></i>
+            <i class="gs-font"
+               :class="{'gs-nanxing': value.sex === SexType.boy, 'gs-nvxing': value.sex === SexType.girl}"></i>
             <p class="name">{{ value.characterName }}</p>
           </div>
           <div>
@@ -33,16 +33,17 @@
       <span class="text">{{ t('bookSource.createCharacter') }}</span>
     </div>
     <EditCharacterDialog
-        :visible="visible"
-        @close="visible = false"
-        @confirm="onConfirm"
-        :form="characterForm"
-        :dressUpItem="dressUpItem"
+      :visible="visible"
+      @close="visible = false"
+      @confirm="onConfirm"
+      :form="characterForm"
+      :dressUpItem="dressUpItem"
     ></EditCharacterDialog>
   </div>
 </template>
 
 <script lang="ts" setup>
+import ListAvatar from './listAvatar.vue'
 import { useI18n } from 'vue-i18n';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -50,7 +51,6 @@ import EditCharacterDialog from './editCharacter.vue'
 import {
   AddCharacter, DeleteCharacter,
   EditCharacter,
-  DetailCharacter,
 } from "@/api/characterCenter";
 import { EBoolean } from "@/interfaces/common.interfaces";
 import { GSEditorModule } from "@/store/modules/gsEditor";
@@ -80,18 +80,17 @@ const createCharacter = () => {
   dressUpItem.value = undefined
   visible.value = true
 }
-const editCharacter = async (obj: ICharacterParams) => {
+const editCharacter = async (obj: ICharacterListItem) => {
   visible.value = true
   characterForm.id = obj.id
   characterForm.characterName = obj.characterName
   characterForm.characterIntro = obj.characterIntro || ''
   characterForm.sex = obj.sex || SexType.boy
   characterForm.mainCharacter = obj.mainCharacter || EBoolean.no
-  dressUpItem.value = undefined
-  // const res: ICharacterDetail = await DetailCharacter(obj.id)
-  // if (res?.styles.length > 0) {
-  //   dressUpItem.value = res.styles[0]
-  // }
+  dressUpItem.value = undefined;
+  if (obj.dressUp && obj.dressUp.length > 0) {
+    dressUpItem.value = obj.dressUp[0]
+  }
 }
 
 const deleteCharacter = async (value: ICharacterListItem) => {
@@ -149,16 +148,18 @@ onMounted(async () => {
         cursor: pointer;
         transition: box-shadow .3s;
         display: grid;
-        grid-template-columns: 52px auto 52px;
+        grid-template-columns: 60px auto 52px;
         align-items: center;
         grid-column-gap: 10px;
 
         &:hover {
           box-shadow: 0 1px 4px #f1f1ff;
         }
+
         .character-name {
           font-size: 14px;
           font-weight: 500;
+
           .name {
             width: 208px;
             margin-top: 10px;
@@ -166,13 +167,16 @@ onMounted(async () => {
             overflow: hidden;
             text-overflow: ellipsis;
           }
+
           .gs-zhujiaose- {
             color: #9191fd;
             margin-right: 10px;
           }
+
           .gs-nvxing {
             color: #f9a0e8;
           }
+
           .gs-nanxing {
             color: #9191fd;
           }

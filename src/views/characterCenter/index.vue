@@ -43,7 +43,7 @@ const onSave = async () => {
       id: route.query.characterId as string,
       dressUpItem: {
         ...CharacterCenterModule.dressUpItem,
-        isDefault: CharacterCenterModule.characterDetail.dressUp.length > 0 ? EBoolean.no : EBoolean.yes,
+        isDefault: CharacterCenterModule.characterDetail.dressUp?.length > 0 ? EBoolean.no : EBoolean.yes,
       }
     })
   } else {
@@ -51,7 +51,7 @@ const onSave = async () => {
       id: route.query.characterId as string,
       dressUpItem: {
         ...CharacterCenterModule.dressUpItem,
-        isDefault: CharacterCenterModule.characterDetail.dressUp.length > 0 ? EBoolean.no : EBoolean.yes,
+        isDefault: CharacterCenterModule.characterDetail.dressUp?.length > 0 ? EBoolean.no : EBoolean.yes,
       }
     })
   }

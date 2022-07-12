@@ -43,7 +43,7 @@ const editAvatar = (item: IDressUpItem) => {
   CharacterCenterModule.ReplaceStyleItem(item);
   CharacterCenterModule.SetIsShowStyleManagement(false)
 }
-const styleData = computed(() => CharacterCenterModule.characterDetail.styles)
+const styleData = computed(() => CharacterCenterModule.characterDetail.dressUp)
 
 const avatarSelect = (item: IDressUpItem) => {
   CharacterCenterModule.ReplaceStyleItem(item);
