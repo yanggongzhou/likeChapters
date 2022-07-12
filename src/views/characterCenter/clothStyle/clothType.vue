@@ -1,25 +1,18 @@
 <template>
   <div class="cloth-type">
-    <el-tabs @tab-click="handleClick">
-      <el-tab-pane v-for="val in bodyData" :key="val.label" :label="val.label" :name="val.name">
-        <ClothItem
-          v-for="three in threeData"
-          :url="three.materialUrl"
-          :key="three.id"
-          :size="'default'"
-          @click="selectThreeData(three)"/>
-      </el-tab-pane>
+    <el-tabs :model-value="lookType" @tab-click="handleClick">
+      <el-tab-pane v-for="val in bodyData" :key="val.label" :label="val.label" :name="val.name"></el-tab-pane>
     </el-tabs>
-
   </div>
 </template>
 
 <script lang="ts" setup>
-import ClothItem from './clothItem.vue'
-import { computed } from "vue";
 import { CharacterCenterModule } from "@/store/modules/characterCenter";
 import { TabsPaneContext } from "element-plus";
 import { LookTypeEnum } from "@/interfaces/material.interfaces";
+import { computed } from "vue";
+
+const lookType = computed(() => CharacterCenterModule.lookType)
 
 const bodyData = [
   { name: LookTypeEnum.skin, label: 'skin' },
@@ -28,28 +21,9 @@ const bodyData = [
   { name: LookTypeEnum.hair, label: 'hair' },
   { name: LookTypeEnum.backext, label: 'backext' }
 ]
-
-const threeData = computed(() => {
-  return CharacterCenterModule.materialVOS.filter((mater: any) => {
-    return !mater.materialFourType;
-  })
-})
-
-const handleClick = (tab: TabsPaneContext, event: Event) => {
-  console.log(tab, event)
-  CharacterCenterModule.SetLookType(tab.props.name as LookTypeEnum)
+const handleClick = (tab: TabsPaneContext) => {
+  CharacterCenterModule.SetLookType(tab.props.name)
 }
-
-// SetMaterialType
-const onSelect = (tab: TabsPaneContext, event: Event) => {
-  console.log(tab, event)
-
-}
-
-const selectThreeData = (three: any) => {
-  console.log(three);
-}
-
 </script>
 
 <style lang="less" scoped>

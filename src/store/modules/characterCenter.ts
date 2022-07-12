@@ -91,9 +91,10 @@ class CharacterCenter extends VuexModule implements ICharacterCenterState {
 
   @Mutation
   private SET_DRESSUPITEM({ id, url }: { id: string, url: string }) {
-    console.log('this.dressUpItem[LookTypeEnum[this.lookType]]', LookTypeEnum[this.lookType],this.dressUpItem[LookTypeEnum[this.lookType]])
     // 再次点击清空
-    if (this.dressUpItem[LookTypeEnum[this.lookType]]?.id) {
+    const modelId = this.dressUpItem[LookTypeEnum[this.lookType]]?.id;
+
+    if (modelId && modelId === id) {
       this.dressUpItem[LookTypeEnum[this.lookType]] = { id: '', url: '' }
     } else {
       this.dressUpItem[LookTypeEnum[this.lookType]] = { id, url }

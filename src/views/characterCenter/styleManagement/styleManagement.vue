@@ -17,8 +17,10 @@
           <el-icon :size="20" v-waves  @click.stop="editAvatar(val)">
             <edit />
           </el-icon>
+          <el-icon :size="20" v-waves  @click.stop="deleteAvatar(val.id)">
+            <edit />
+          </el-icon>
         </div>
-
       </div>
       <div class="avatar-add" @click="addAvatar">
         <el-icon><circle-plus-filled /></el-icon>
@@ -30,9 +32,14 @@
 <script lang="ts" setup>
 import Avatar from '@/components/avatar/avatar.vue'
 import { CharacterCenterModule } from "@/store/modules/characterCenter";
-import { computed } from "vue";
+import { computed, defineProps } from "vue";
 import { useI18n } from "vue-i18n";
 import { IDressUpItem } from "@/interfaces/character.interfaces";
+import { DeleteCharacterLook } from "@/api/characterCenter";
+
+const props = defineProps({
+  characterId: String
+})
 
 const { t } = useI18n()
 const addAvatar = () => {
@@ -43,6 +50,12 @@ const editAvatar = (item: IDressUpItem) => {
   CharacterCenterModule.ReplaceStyleItem(item);
   CharacterCenterModule.SetIsShowStyleManagement(false)
 }
+
+const deleteAvatar = async (id: string) => {
+  await DeleteCharacterLook({ id, characterId: props.characterId })
+  await CharacterCenterModule.SetCharacterDetail({ characterId: props.characterId, isMounted: true });
+}
+
 const styleData = computed(() => CharacterCenterModule.characterDetail.dressUp)
 
 const avatarSelect = (item: IDressUpItem) => {

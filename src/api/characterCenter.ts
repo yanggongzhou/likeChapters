@@ -42,7 +42,15 @@ export const DeleteCharacter = async (id: string) => {
 }
 
 /**
- * 新增风格
+ * 查询
+ * @param id 角色详情ID
+ */
+export const DetailCharacter = async (id: string) => {
+  return await Service.get('/character/detail', { params: { id } })
+}
+
+/**
+ * 新增形象
  * @param id 角色ID
  * @param dressUpItem 风格名称
  */
@@ -51,15 +59,21 @@ export const AddCharacterLook = async ({ id, dressUpItem }: { id: string, dressU
 }
 
 /**
- * 修改
+ * 修改形象
  * @param id 风格ID
- * @param biographyId: 角色Id
- * @param styleName 风格名称
- * @param defaultStyle 是否默认风格 0 1
- * @param material 角色id 逗号分割
+ * @param dressUpItem IDressUpItem
  */
 export const EditCharacterLook = async ({ id, dressUpItem }: { id: string, dressUpItem: IDressUpItem }) => {
   return await Service.post('/character/look/edit', { id, dressUpItem })
+}
+
+/**
+ * 删除形象
+ * @param id 风格ID
+ * @param dressUpItem IDressUpItem
+ */
+export const DeleteCharacterLook = async ({ id, characterId }: { id: string, characterId: string }) => {
+  return await Service.delete('/character/look/delete', { params: { id, characterId } })
 }
 
 /**
@@ -75,31 +89,6 @@ export interface IAddStyleParam {
   defaultStyle: EBoolean;
   material: string;
 }
-/**
- * 新增风格
- * @param biographyId 角色
- * @param styleName 风格名称
- * @param defaultStyle 是否默认风格 0 1
- * @param material 角色id
- */
-export const AddStyle = async ({ biographyId, styleName, defaultStyle, material }: IAddStyleParam) => {
-  return await Service.post('/script-editor/entry/4021', {
-    biographyId, styleName, defaultStyle, material
-  })
-}
-
-/**
- * 修改
- * @param id 风格ID
- * @param biographyId: 角色Id
- * @param styleName 风格名称
- * @param defaultStyle 是否默认风格 0 1
- * @param material 角色id 逗号分割
- */
-export const EditStyle = async ({ id, biographyId, styleName, defaultStyle, material }: IAddStyleParam & {id: string}) => {
-  return await Service.post('/script-editor/entry/4022', { id, biographyId, styleName, defaultStyle, material })
-}
-
 
 export interface IBiographyList {
   id: string | number;
@@ -122,10 +111,3 @@ export const EditScene = async (param: IBiographyForm) => {
   return await Service.post('/script-editor/entry/4039', { ...param })
 }
 
-/**
- * 查询
- * @param id 角色详情ID
- */
-export const DetailCharacter = async (id: string) => {
-  return await Service.get('/character/detail', { params: { id } })
-}

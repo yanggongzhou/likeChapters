@@ -6,7 +6,7 @@
     </div>
     <ClothStyle v-if="!isShowStyleManagement" :dataSource="dataSource" @onSave="onSave" @onCancel="onCancel"></ClothStyle>
     <div class="item-style-management" v-else>
-      <StyleManagement></StyleManagement>
+      <StyleManagement :characterId="characterId"></StyleManagement>
     </div>
   </div>
 </template>
@@ -26,6 +26,7 @@ import { MaterialTypeEnum } from "@/interfaces/material.interfaces";
 
 const route = useRoute()
 const dataSource = ref()
+const characterId = computed(() => route.query.characterId as string)
 
 const isShowStyleManagement = computed(() => CharacterCenterModule.isShowStyleManagement)
 
@@ -40,7 +41,7 @@ const onSave = async () => {
   const { id } = CharacterCenterModule.dressUpItem
   if (id) {
     await EditCharacterLook({
-      id: route.query.characterId as string,
+      id: characterId.value,
       dressUpItem: {
         ...CharacterCenterModule.dressUpItem,
         isDefault: CharacterCenterModule.characterDetail.dressUp?.length > 0 ? EBoolean.no : EBoolean.yes,
@@ -48,7 +49,7 @@ const onSave = async () => {
     })
   } else {
     await AddCharacterLook({
-      id: route.query.characterId as string,
+      id: characterId.value,
       dressUpItem: {
         ...CharacterCenterModule.dressUpItem,
         isDefault: CharacterCenterModule.characterDetail.dressUp?.length > 0 ? EBoolean.no : EBoolean.yes,
@@ -57,11 +58,6 @@ const onSave = async () => {
   }
   CharacterCenterModule.SetIsShowStyleManagement(true)
   getCharacterDetail()
-}
-
-const getMaterialId = () => {
-  const ids = CharacterCenterModule.dressUpItem.materialVOS.map(val => val.id);
-  return ids.join(',');
 }
 
 const getMaterialList = async () => {
@@ -74,10 +70,7 @@ onMounted(() => {
 })
 
 const getCharacterDetail = () => {
-  const { characterId = '' } = route.query
-  if (characterId) {
-    CharacterCenterModule.SetCharacterDetail({ characterId, isMounted: true } as {characterId: string, isMounted: boolean})
-  }
+  CharacterCenterModule.SetCharacterDetail({ characterId: characterId.value, isMounted: true })
 }
 
 onUnmounted(() => {
