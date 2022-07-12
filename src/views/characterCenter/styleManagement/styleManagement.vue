@@ -18,7 +18,7 @@
             <edit />
           </el-icon>
           <el-icon :size="20" v-waves  @click.stop="deleteAvatar(val.id)">
-            <edit />
+            <delete />
           </el-icon>
         </div>
       </div>

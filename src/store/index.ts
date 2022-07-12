@@ -4,7 +4,7 @@ import {
   IAppState,
   ICharacterCenterState,
   IChoreographerState,
-  IGSEditorModuleState,
+  IEditorModuleState,
   IUserState
 } from '@/store/modules/index.model';
 import { IResultState } from "@/store/modules/result.model";
@@ -14,8 +14,8 @@ export interface IStore {
   app: IAppState; // app其他信息
   characterCenter: ICharacterCenterState; // 角色中心
   result: IResultState; // 结果
-  gsEditor: IGSEditorModuleState; // gs编辑器
   choreographer: IChoreographerState; // 编导
+  editor: IEditorModuleState; // UGC
 }
 
 export const key: InjectionKey<Store<IStore>> = Symbol('workplatform')

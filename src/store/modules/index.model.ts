@@ -33,7 +33,6 @@ export enum LanguageType {
 export enum HomeNavActiveType {
   authorCenter = '1',
   materialCenter = '2',
-  choreographerCenter = '3'
 }
 
 export interface ICharacterCenterState {
@@ -106,19 +105,14 @@ export interface INodeVOSItem extends INode {
   options?: IOptionItem[];
 }
 
-export interface IGSEditorModuleState {
-  isExpand: boolean;
-  activeNodeId?: string | number;
-  nodeVOS: INodeVOSItem[];
-
-  sceneList: IBiographyList[];
-  characterList: IBiographyForm[];
-
-}
-
 // 编导
 export interface IChoreographerState {
   activeNodeId?: string | number;
   nodeVOS: INodeVOSItem[];
   chatInfo: ITemplate[];
+}
+
+export interface IEditorModuleState {
+  isExpand: boolean;
+  activeNodeId?: string | number;
 }

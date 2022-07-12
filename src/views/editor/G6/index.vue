@@ -11,7 +11,7 @@
 import EditOption, { IOptionForm } from './components/editOption.vue'
 import EditNodeDialog, { INodeForm } from './components/editNode.vue'
 import { computed, onMounted, reactive, ref, watch } from "vue";
-import useStoryGraph, { IUseStoryGraph } from "@/views/choreographer/G6/components/index.ts";
+import useStoryGraph, { IUseStoryGraph } from "@/views/editor/G6/components/index";
 import { IG6GraphEvent, Item } from "@antv/g6-core";
 import storyBus from "@/utils/storyBus";
 import { GraphData, IEdge, INode } from "@antv/g6";

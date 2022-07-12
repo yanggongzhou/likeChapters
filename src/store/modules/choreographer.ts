@@ -3,7 +3,7 @@ import store from '@/store'
 import { IChoreographerState, INodeVOSItem } from '@/store/modules/index.model';
 import { ListChapterNode } from "@/api/gsEditor";
 import storyBus from "@/utils/storyBus";
-import { AnalyseChoreographer, getG6Data } from "@/utils/resultModule";
+import { AnalyseChoreographer } from "@/utils/resultModule";
 import { ITemplate, TemplateTypeEnum } from "@/store/modules/result.model";
 import { NodeConfig } from "@antv/g6-core/lib/types";
 

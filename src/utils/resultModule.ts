@@ -1,8 +1,8 @@
 import { ClassNameTypeEnumZH, INodeVOSItem, IOptionItem } from "@/store/modules/index.model";
 import { EmotionEnum, ITemplate, TemplateTypeEnum } from "@/store/modules/result.model";
 import { EdgeConfig, NodeConfig } from "@antv/g6-core/lib/types";
-import { fittingString } from "@/views/gsEditor/G6/components/storyNode";
 import { GraphData } from "@antv/g6";
+import { fittingString } from "@/views/editor/G6/components/choNode";
 
 // 生成随机ID
 export function getGuid():string {
@@ -159,21 +159,6 @@ const AnalyseGsEditor = (dom: HTMLElement): ITemplate[] & NodeConfig[] => {
   return resultData;
 }
 
-// 获取场景列表 -- 左侧 定位锚点
-export const getEditorSceneList = (): {titleId: string; sceneTitle: string}[] => {
-  const dom = document.getElementById('editorRefId') as HTMLElement;
-  const domNodeArr = Array.prototype.slice.call(dom.childNodes) // NodeList 转换成可操纵数组
-  const sceneList: {titleId: string; sceneTitle: string}[] = [];
-  domNodeArr.forEach((val: HTMLDivElement) => {
-    if (val.className === ClassNameTypeEnumZH.场景) {
-      sceneList.push({
-        titleId: val.id,
-        sceneTitle: val.innerText
-      })
-    }
-  })
-  return sceneList.length > 0 ? sceneList : [ { titleId: getGuid(), sceneTitle: '' } ];
-}
 
 // 获取g6数据
 export const getG6Data = (nodeVOS: INodeVOSItem[], activeNodeId: string) => {

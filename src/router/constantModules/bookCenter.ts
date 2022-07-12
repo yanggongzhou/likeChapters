@@ -32,12 +32,7 @@ const bookRouter: Array<RouteRecordRaw> = [
         path: '/editor',
         name: BookRouteNameEnum.编辑器,
         component: () => import(/* webpackChunkName: "editBook" */ '@/views/editor/index.vue'),
-      },
-      {
-        path: '/choreographer',
-        name: BookRouteNameEnum.编导,
-        component: () => import(/* webpackChunkName: "editBook" */ '@/views/choreographer/index.vue'),
-      },
+      }
     ]
   }
 ]

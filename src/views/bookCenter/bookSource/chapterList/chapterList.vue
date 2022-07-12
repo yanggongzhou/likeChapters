@@ -23,7 +23,6 @@
         <template #operations="scope">
           <el-button size="small" type="primary" @click.stop="editChapter(scope.row)">{{ t('common.edit') }}</el-button>
           <el-button size="small" @click.stop="deleteChapter(scope.row.id)">删除</el-button>
-          <el-button size="small" @click.stop="goChoreographer(scope.row)">编导</el-button>
         </template>
       </DzTable>
 
@@ -134,11 +133,6 @@ const chapterData = reactive({
     chapterData.chapterList = await ListChapter(bookId.value);
   }
 })
-
-const goChoreographer = (row: any) => {
-  const { id, bookId } = row
-  router.push({ name: 'choreographer', query: { bookId, chapterId: id } })
-}
 
 const deleteChapter = async (id: string) => {
   await DeleteChapter(id)

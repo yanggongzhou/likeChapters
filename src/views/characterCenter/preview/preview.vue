@@ -1,7 +1,9 @@
 <template>
   <div class="preview-warp">
     <div class="back">
-      <el-icon v-waves @click="goBack"><arrow-left-bold /></el-icon>
+      <el-icon v-waves @click="goBack">
+        <arrow-left-bold/>
+      </el-icon>
     </div>
     <div class="preview-content">
       <Avatar
@@ -17,23 +19,29 @@ import Avatar from '@/components/avatar/avatar.vue'
 import { useRouter } from 'vue-router';
 import { computed } from "vue";
 import { CharacterCenterModule } from "@/store/modules/characterCenter";
+
+const dressUpItem = computed(() => CharacterCenterModule.dressUpItem)
+
 const router = useRouter()
+
 const goBack = () => {
   router.go(-1)
 }
-const dressUpItem = computed(() => CharacterCenterModule.dressUpItem)
+
 </script>
 
 <style lang="less" scoped>
 .preview-warp {
   margin: 20px;
   height: calc(100% - 40px);
+
   .back {
     font-size: 20px;
     font-weight: 600;
     cursor: pointer;
     margin-bottom: 40px;
   }
+
   .preview-content {
     border-radius: 10px;
     height: 580px;

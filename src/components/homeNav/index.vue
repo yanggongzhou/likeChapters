@@ -20,14 +20,6 @@
         </el-icon>
         <span style="margin-left: 20px">{{ t('book.materialCenter') }}</span>
       </el-menu-item>
-
-      <el-menu-item :index="HomeNavActiveType.choreographerCenter">
-        <el-icon>
-          <document/>
-        </el-icon>
-        <span style="margin-left: 20px">{{ t('book.choreographerCenter') }}</span>
-      </el-menu-item>
-
     </el-menu>
   </div>
 

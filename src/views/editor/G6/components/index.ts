@@ -1,8 +1,8 @@
 import G6 from "@antv/g6";
-import { storyEdgeMenu, storyNodeMenu } from "@/views/choreographer/G6/components/storyNodeMenu";
-import { storyMinimap } from "@/views/choreographer/G6/components/minimap";
-import { storyToolbar } from "@/views/choreographer/G6/components/toolbar";
-import { ChoNode } from "@/views/choreographer/G6/components/choNode.tsx";
+import { storyEdgeMenu, storyNodeMenu } from "@/views/editor/G6/components/storyNodeMenu";
+import { storyMinimap } from "@/views/editor/G6/components/minimap";
+import { storyToolbar } from "@/views/editor/G6/components/toolbar";
+import { ChoNode } from "@/views/editor/G6/components/choNode.tsx";
 import Graph from "@antv/g6-pc/lib/graph/graph";
 import { EdgeConfig } from "@antv/g6-core/lib/types";
 import { onBeforeRouteLeave } from "vue-router";

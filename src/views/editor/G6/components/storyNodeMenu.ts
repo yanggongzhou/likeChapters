@@ -1,6 +1,6 @@
 import G6 from "@antv/g6";
 import { IG6GraphEvent, Item } from "@antv/g6-core";
-import '@/views/gsEditor/G6/components/index.less'
+import '@/views/editor/G6/components/index.less'
 import { ElMessageBox, ElMessage } from "element-plus";
 import storyBus from "@/utils/storyBus";
 import { Path } from "@intlify/core-base";

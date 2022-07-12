@@ -52,9 +52,6 @@ const getBreadcrumb = (name: string | symbol | null | undefined) => {
     case BookRouteNameEnum.编辑器:
       breadcrumbs.value = [ BookRouteNameEnum.首页, BookRouteNameEnum.书籍, BookRouteNameEnum.编辑器 ];
       break;
-    case BookRouteNameEnum.编导:
-      breadcrumbs.value = [ BookRouteNameEnum.首页, BookRouteNameEnum.书籍, BookRouteNameEnum.编导 ];
-      break;
     case BookRouteNameEnum.素材中心:
       breadcrumbs.value = [ BookRouteNameEnum.首页, BookRouteNameEnum.素材中心 ];
       break;

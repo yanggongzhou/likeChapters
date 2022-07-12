@@ -2,7 +2,35 @@ import { ModelConfig } from "@antv/g6-core/lib/types";
 import { ShapeDefine, ShapeOptions } from "@antv/g6-core/lib/interface/shape";
 import G6 from "@antv/g6";
 import { ITemplate, TemplateTypeZhEnum } from "@/store/modules/result.model";
-import { fittingString } from "@/views/gsEditor/G6/components/storyNode";
+
+/**
+ * format the string
+ * @param {string} str The origin string
+ * @param {number} maxWidth max width
+ * @param {number} fontSize font size
+ * @return {string} the processed result
+ */
+export const fittingString = (str: string, maxWidth = 90, fontSize = 12) => {
+  const ellipsis = '...';
+  const ellipsisLength = G6.Util.getTextSize(ellipsis, fontSize)[0];
+  let currentWidth = 0;
+  let res = str;
+  const pattern = new RegExp('[\u4E00-\u9FA5]+'); // distinguish the Chinese charactors and letters
+  str.split('').forEach((letter, i) => {
+    if (currentWidth > maxWidth - ellipsisLength) return;
+    if (pattern.test(letter)) {
+      // Chinese charactors
+      currentWidth += fontSize;
+    } else {
+      // get the width of single letter according to the fontSize
+      currentWidth += G6.Util.getLetterWidth(letter, fontSize);
+    }
+    if (currentWidth > maxWidth - ellipsisLength) {
+      res = `${str.substr(0, i)}${ellipsis}`;
+    }
+  });
+  return res;
+};
 
 const CustomNode = (cfg: ModelConfig & { info: ITemplate }): ShapeOptions | ShapeDefine => {
   const typeName = TemplateTypeZhEnum[cfg.info.type]

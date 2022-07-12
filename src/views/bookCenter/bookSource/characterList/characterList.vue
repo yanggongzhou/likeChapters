@@ -50,10 +50,9 @@ import { useRoute, useRouter } from 'vue-router';
 import EditCharacterDialog from './editCharacter.vue'
 import {
   AddCharacter, DeleteCharacter,
-  EditCharacter,
+  EditCharacter, ListCharacter,
 } from "@/api/characterCenter";
 import { EBoolean } from "@/interfaces/common.interfaces";
-import { GSEditorModule } from "@/store/modules/gsEditor";
 import { ICharacterListItem, ICharacterParams, IDressUpItem, SexType } from "@/interfaces/character.interfaces";
 
 const { t } = useI18n()
@@ -70,6 +69,9 @@ const characterForm = reactive<ICharacterParams>({
   sex: SexType.boy,
   mainCharacter: EBoolean.no,
 })
+
+const characterList = ref<ICharacterListItem[]>([]);
+
 // 创建角色
 const createCharacter = () => {
   characterForm.id = void 0
@@ -95,7 +97,7 @@ const editCharacter = async (obj: ICharacterListItem) => {
 
 const deleteCharacter = async (value: ICharacterListItem) => {
   await DeleteCharacter(value.id)
-  await GSEditorModule.GetCharacterList(bookId.value)
+  await goCharacterList();
 }
 
 const onConfirm = async (characterForm: ICharacterParams) => {
@@ -105,17 +107,19 @@ const onConfirm = async (characterForm: ICharacterParams) => {
   } else {
     await AddCharacter(characterForm)
   }
-  await GSEditorModule.GetCharacterList(bookId.value)
+  await goCharacterList()
 }
-
-const characterList = computed(() => GSEditorModule.characterList);
 
 const goCharacterCenter = (id: string, bookId: string) => {
   router.push({ path: '/characterCenter', query: { characterId: id, bookId } })
 }
 
+const goCharacterList = async () => {
+  characterList.value = await ListCharacter(bookId.value)
+}
+
 onMounted(async () => {
-  await GSEditorModule.GetCharacterList(bookId.value)
+  await goCharacterList()
 })
 
 </script>
