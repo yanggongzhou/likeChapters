@@ -1,8 +1,7 @@
-import { IBiographyForm, IBiographyList } from "@/api/characterCenter";
-import { ITemplate, TemplateTypeEnum } from "@/store/modules/result.model";
 import { EBoolean } from "@/interfaces/common.interfaces";
 import { LookTypeEnum, MaterialTypeEnum } from "@/interfaces/material.interfaces";
 import { ICharacterListItem, IDressUpItem } from "@/interfaces/character.interfaces";
+import { ISceneItem, TemplateTypeEnum } from "@/interfaces/editor.interfaces";
 
 // user
 export interface IUserState {
@@ -46,33 +45,6 @@ export interface ICharacterCenterState {
   materialVOS: any;
 }
 
-// GSEditor
-export enum ClassNameTypeEnum {
-  sceneheading = 1,
-  narrator = 2,
-  character,
-  expression,
-  dialog,
-  monologue,
-}
-
-export enum ClassNameTypeListEnum {
-  SceneHeading = ClassNameTypeEnum.sceneheading,
-  Narration = ClassNameTypeEnum.narrator,
-  Character = ClassNameTypeEnum.character,
-  Expression = ClassNameTypeEnum.expression,
-  Dialog = ClassNameTypeEnum.dialog,
-  Monologue = ClassNameTypeEnum.monologue
-}
-export enum ClassNameTypeEnumZH {
-  场景 = 'sceneheading',
-  旁白 = 'narrator',
-  角色 = 'character',
-  表情 = 'expression',
-  对话 = 'dialog',
-  内心独白 = 'monologue',
-}
-
 export interface INode {
   id: string | number;
   bookId: string | number;
@@ -109,10 +81,12 @@ export interface INodeVOSItem extends INode {
 export interface IChoreographerState {
   activeNodeId?: string | number;
   nodeVOS: INodeVOSItem[];
-  chatInfo: ITemplate[];
+  chatInfo: ISceneItem[];
 }
 
+// UGC编辑
 export interface IEditorModuleState {
   isExpand: boolean;
   activeNodeId?: string | number;
+  sceneData: Array<ISceneItem>
 }

@@ -53,8 +53,8 @@
 import { reactive, ref, defineProps, defineEmits, unref, PropType, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n';
 import { ElForm } from "element-plus";
-import { TemplateTypeEnum } from "@/store/modules/result.model";
 import { EBoolean } from "@/interfaces/common.interfaces";
+import { TemplateTypeEnum } from "@/interfaces/editor.interfaces";
 
 export interface IOptionForm {
   id: string | number;

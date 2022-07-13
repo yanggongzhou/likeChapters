@@ -25,12 +25,12 @@ import {
   IEditNodeParam,
   IAddNodeParam
 } from "@/api/gsEditor";
-import { TemplateTypeEnum } from "@/store/modules/result.model";
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 import { EBoolean } from "@/interfaces/common.interfaces";
 import { getGuid } from "@/utils/resultModule";
 import { ChoreographerModule } from "@/store/modules/choreographer";
 import { debounce } from "lodash";
+import { TemplateTypeEnum } from "@/interfaces/editor.interfaces";
 
 const optionForm = reactive<IOptionForm>({} as IOptionForm)
 const nodeForm = reactive<INodeForm>({} as INodeForm)

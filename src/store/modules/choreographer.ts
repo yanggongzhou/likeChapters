@@ -3,9 +3,7 @@ import store from '@/store'
 import { IChoreographerState, INodeVOSItem } from '@/store/modules/index.model';
 import { ListChapterNode } from "@/api/gsEditor";
 import storyBus from "@/utils/storyBus";
-import { AnalyseChoreographer } from "@/utils/resultModule";
-import { ITemplate, TemplateTypeEnum } from "@/store/modules/result.model";
-import { NodeConfig } from "@antv/g6-core/lib/types";
+import { ISceneItem } from "@/interfaces/editor.interfaces";
 
 @Module({
   dynamic: true,
@@ -16,7 +14,7 @@ import { NodeConfig } from "@antv/g6-core/lib/types";
 class CHOREOGRAPHER extends VuexModule implements IChoreographerState {
   public activeNodeId = '' // active的节点id
   public nodeVOS = [] as INodeVOSItem[]; // 章节的节点选项列表
-  public chatInfo = [] as ITemplate[]; // 最小节点
+  public chatInfo = [] as ISceneItem[]; // 最小节点
 
   @Mutation
   private SET_ACTIVENODEID(activeNodeId: string) {
@@ -29,7 +27,7 @@ class CHOREOGRAPHER extends VuexModule implements IChoreographerState {
   }
 
   @Mutation
-  private SET_CHATINFO(list: ITemplate[]) {
+  private SET_CHATINFO(list: ISceneItem[]) {
     this.chatInfo = list
   }
 
@@ -39,7 +37,7 @@ class CHOREOGRAPHER extends VuexModule implements IChoreographerState {
   }
 
   @Action
-  public SetChatInfo(list: ITemplate[]) {
+  public SetChatInfo(list: ISceneItem[]) {
     this.SET_CHATINFO(list)
   }
 
@@ -233,24 +231,11 @@ class CHOREOGRAPHER extends VuexModule implements IChoreographerState {
         this.SET_ACTIVENODEID(String(nodeVOS[0].id))
       }
       this.SET_NODEVOSLIST(nodeVOS)
-      // const g6Data = getG6Data(nodeVOS, this.activeNodeId)
-      const g6ChoreographerData = AnalyseChoreographer(nodeVOS);
-      // eslint-disable-next-line no-unused-expressions
-      g6ChoreographerData.nodes?.forEach(_node => {
-        const node = _node as NodeConfig & {info: ITemplate, color?: string}
-        if (node.info.type === TemplateTypeEnum.对话) {
-          node.color = '#9896a1'
-        }
-        if (node.info.type === TemplateTypeEnum.旁白) {
-          node.color = '#c3c0ce'
-        }
-        if (node.info.type === TemplateTypeEnum.内心独白) {
-          node.color = '#8d80c1'
-        }
-        if (node.info.type === TemplateTypeEnum.对话分支) {
-          node.color = '#c9c989'
-        }
-      })
+
+      const g6ChoreographerData = {
+        nodes: [],
+        edges: []
+      }
       storyBus.emit('ChoreographerModule/refreshData', g6ChoreographerData)
     }
   }

@@ -7,13 +7,11 @@ import {
   IEditorModuleState,
   IUserState
 } from '@/store/modules/index.model';
-import { IResultState } from "@/store/modules/result.model";
 
 export interface IStore {
   auth: IUserState; // 用户中心
   app: IAppState; // app其他信息
   characterCenter: ICharacterCenterState; // 角色中心
-  result: IResultState; // 结果
   choreographer: IChoreographerState; // 编导
   editor: IEditorModuleState; // UGC
 }

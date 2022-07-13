@@ -1,14 +1,6 @@
 import Service from '@/utils/request';
-import { TemplateTypeEnum } from "@/store/modules/result.model";
 import { EBoolean } from "@/interfaces/common.interfaces";
-
-/**
- * 剧本所在书籍 联想词
- * @param bookId 书籍id
- */
-export const AssociationalWord = async (bookId: string) => {
-  return await Service.post('/script-editor/entry/4013', { bookId })
-}
+import { TemplateTypeEnum } from "@/interfaces/editor.interfaces";
 
 export interface IAddNodeParam {
   bookId: string | number;

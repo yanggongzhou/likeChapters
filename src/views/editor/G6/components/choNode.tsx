@@ -1,7 +1,7 @@
 import { ModelConfig } from "@antv/g6-core/lib/types";
 import { ShapeDefine, ShapeOptions } from "@antv/g6-core/lib/interface/shape";
 import G6 from "@antv/g6";
-import { ITemplate, TemplateTypeZhEnum } from "@/store/modules/result.model";
+import { ISceneItem } from "@/interfaces/editor.interfaces";
 
 /**
  * format the string
@@ -32,8 +32,9 @@ export const fittingString = (str: string, maxWidth = 90, fontSize = 12) => {
   return res;
 };
 
-const CustomNode = (cfg: ModelConfig & { info: ITemplate }): ShapeOptions | ShapeDefine => {
-  const typeName = TemplateTypeZhEnum[cfg.info.type]
+const CustomNode = (cfg: ModelConfig & { info: ISceneItem }): ShapeOptions | ShapeDefine => {
+  // const typeName = TemplateTypeZhEnum[cfg.info.type]
+  const typeName = '123454444'
   return `
     <group style={{ cursor: 'pointer' }}>
       <rect style={{
