@@ -2,6 +2,7 @@ import { VuexModule, Module, Mutation, Action, getModule } from 'vuex-module-dec
 import store from '@/store'
 import { IEditorModuleState } from '@/store/modules/index.model';
 import { ISceneItem } from "@/interfaces/editor.interfaces";
+import { ListNode } from "@/api/editor";
 import { SceneItemDto } from "@/utils/resultModule";
 
 @Module({
@@ -13,7 +14,8 @@ import { SceneItemDto } from "@/utils/resultModule";
 class EDITOR extends VuexModule implements IEditorModuleState {
   public isExpand = false // 是否展开
   public activeNodeId = '' // active的节点id
-  public sceneData = [] as Array<ISceneItem>;
+  public sceneList = [] as Array<ISceneItem>;
+  public sceneItem = {} as ISceneItem;
 
   @Mutation
   private SET_ISEXPAND(isExpand: boolean) {
@@ -38,37 +40,24 @@ class EDITOR extends VuexModule implements IEditorModuleState {
   // 设置输出
   @Mutation
   private SET_RESULT(res: ISceneItem[]) {
-    this.sceneData = JSON.parse(JSON.stringify(res));
+    this.sceneList = JSON.parse(JSON.stringify(res));
   }
 
   @Mutation
-  private ADD_RESULT(item: SceneItemDto) {
-    // this.sceneData.push(item);
+  private SET_SCENEITEM(sceneItem: ISceneItem) {
+    this.sceneItem = { ...sceneItem }
   }
 
-  @Mutation
-  private UPDATE_RESULT(res: ISceneItem[]) {
-    this.sceneData = JSON.parse(JSON.stringify(res));
-  }
-
-  @Mutation
-  private REMOVE_RESULT(res: ISceneItem[]) {
-    this.sceneData = JSON.parse(JSON.stringify(res));
-  }
-
-  // 设置输出
   @Action
-  public SetResult(res: any) {
-    this.SET_RESULT(res)
+  public SetSceneItem(sceneItem: ISceneItem) {
+    this.SET_SCENEITEM(sceneItem)
   }
 
-  @Action // 添加普通对话旁白等消息
-  public AddResult() {
-    const item = new SceneItemDto();
-    // this.ADD_RESULT(item)
-    console.log('AddMessage-------->', item)
+  @Action
+  public async Init({ bookId, chapterId }: { bookId: string, chapterId: string }) {
+    const list = await ListNode(bookId, chapterId)
+    this.SET_RESULT(list)
   }
-
 }
 
 export const EditorModule = getModule(EDITOR)

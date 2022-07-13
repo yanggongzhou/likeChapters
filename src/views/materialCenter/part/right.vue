@@ -52,10 +52,10 @@ const getClothStyleList = async () => {
 
 onMounted(() => {
   getClothStyleList()
-  CharacterCenterModule.Init()
+  // CharacterCenterModule.Init()
 })
 onUnmounted(() => {
-  CharacterCenterModule.ResetCharacterCenter()
+  // CharacterCenterModule.ResetCharacterCenter()
 })
 const { t } = useI18n()
 const router = useRouter()
@@ -63,7 +63,7 @@ const route = useRoute()
 
 const materialName = computed(() => CharacterCenterModule.materialType) // 一级标题
 const handleClick = (tab: any) => {
-  CharacterCenterModule.SetMaterialType(tab.props.name as MaterialTypeEnum);
+  // CharacterCenterModule.SetMaterialType(tab.props.name as MaterialTypeEnum);
 }
 
 </script>

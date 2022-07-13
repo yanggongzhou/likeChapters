@@ -33,7 +33,7 @@ import { LookTypeEnum } from "@/interfaces/material.interfaces";
 const { t } = useI18n()
 const emits = defineEmits([ 'onSave', 'onCancel' ])
 
-const activeName = computed(() => CharacterCenterModule.clothType)
+// const activeName = computed(() => CharacterCenterModule.clothType)
 const props = defineProps({
   dataSource: Object,
   isSave: {
@@ -42,17 +42,17 @@ const props = defineProps({
   }, // 是否显示保存
 })
 const list = computed(() => props.dataSource?.[activeName.value] || [])
-const isChecked = computed(() => {
-  if (CharacterCenterModule.dressItem.materialVOS && CharacterCenterModule.dressItem.materialVOS.length > 0) {
-    const data = CharacterCenterModule.dressItem.materialVOS.filter(val => val.materialType === CharacterCenterModule.clothType)
-    return data.length > 0 ? data[0].materialUrl : ''
-  }
-  return ''
-})
+// const isChecked = computed(() => {
+//   if (CharacterCenterModule.dressItem.materialVOS && CharacterCenterModule.dressItem.materialVOS.length > 0) {
+//     const data = CharacterCenterModule.dressItem.materialVOS.filter(val => val.materialType === CharacterCenterModule.clothType)
+//     return data.length > 0 ? data[0].materialUrl : ''
+//   }
+//   return ''
+// })
 
-const selectCloth = ({ id, materialUrl }: { id: number, materialUrl: string }) => {
-  CharacterCenterModule.SetDressUpItem({ id, url: materialUrl })
-}
+// const selectCloth = ({ id, materialUrl }: { id: number, materialUrl: string }) => {
+//   CharacterCenterModule.SetDressUpItem({ id, url: materialUrl })
+// }
 </script>
 
 <style lang="less" scoped>

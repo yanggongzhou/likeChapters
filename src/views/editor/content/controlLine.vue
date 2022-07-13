@@ -11,14 +11,8 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, defineEmits } from "vue";
-
-const props = defineProps({
-  modelValue: String
-})
-
+import { defineEmits } from "vue";
 const emits = defineEmits(['message', 'choice', 'link']);
-
 </script>
 
 <style lang="less" scoped>

@@ -17,15 +17,16 @@
 import EditorContent from '@/views/editor/content/index.vue'
 import AvatarPreview from '@/views/characterCenter/preview/preview.vue'
 import EditorRight from '@/views/editor/right/right.vue'
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
+import { EditorModule } from "@/store/modules/editor";
 
 const route = useRoute();
 const bookId = computed(() => route.query.bookId as string);
 const chapterId = computed(() => route.query.chapterId as string);
 
 onMounted(async () => {
-  // await ChoreographerModule.GetChapterList({ bookId: bookId.value, chapterId: chapterId.value });
+  await EditorModule.Init({ bookId: bookId.value, chapterId: chapterId.value })
 })
 </script>
 

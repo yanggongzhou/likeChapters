@@ -87,6 +87,7 @@ export interface IChoreographerState {
 // UGC编辑
 export interface IEditorModuleState {
   isExpand: boolean;
-  activeNodeId?: string | number;
-  sceneData: Array<ISceneItem>
+  activeNodeId?: string;
+  sceneList: Array<ISceneItem>;
+  sceneItem: ISceneItem;
 }

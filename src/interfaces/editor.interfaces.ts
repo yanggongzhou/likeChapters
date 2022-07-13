@@ -1,5 +1,7 @@
 export interface ISceneItem {
   id?: string;
+  bookId?: string;
+  chapterId?: string;
   sceneContent?: string; // 场景标题｜内容
   roleId?: string; // 角色Id role_id
   roleName?: string; // 角色名称
@@ -13,8 +15,8 @@ export interface ISceneItem {
   bgmId?: string; // 背景音乐 bgm_id
   sceneBg?: string; // 场景背景名称 scene_bg
   sceneAround?: boolean; // 场景环视，是一个特效 scene_around
-  options?: string[], // 对话选项
-  selections?: string[], // 服饰选项
+  options?: string[]; // 对话选项
+  selections?: string[]; // 服饰选项
   sceneNum?: string; // 场景编号
   // end: boolean; // 是否本章重点
 }

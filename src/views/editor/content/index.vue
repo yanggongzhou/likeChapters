@@ -1,7 +1,10 @@
 <template>
   <div class="editor-content-wrap">
     content
-    <EditScene v-model="scene"/>
+    <SceneDetail v-model="scene"/>
+    <MessageDetail
+      :characterList="characterList"
+    />
     <ControlLine
       @message="addMessage"
       @choice="addChoice"
@@ -12,20 +15,32 @@
 
 <script lang="ts" setup>
 import ControlLine from '@/views/editor/content/controlLine.vue'
-import EditScene from '@/views/editor/content/editScene.vue'
-import { computed, ref } from "vue";
+import SceneDetail from '@/views/editor/content/sceneDetail.vue'
+import MessageDetail from '@/views/editor/content/messageDetail.vue'
+import { computed, onBeforeMount, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { EditorModule } from "@/store/modules/editor";
+import { SceneItemDto } from "@/utils/resultModule";
+import { ICharacterListItem } from "@/interfaces/character.interfaces";
+import { ListCharacter } from "@/api/characterCenter";
 
 const route = useRoute();
 const bookId = computed(() => route.query.bookId as string);
 const chapterId = computed(() => route.query.chapterId as string);
+const characterList = ref<ICharacterListItem>([])
+const sceneItem = computed(() => EditorModule.sceneItem);
+
+onBeforeMount(async () => {
+  characterList.value = await ListCharacter(bookId.value)
+})
 
 const scene = ref('123')
 // 添加消息框
 const addMessage = () => {
   console.log('添加消息框')
-  EditorModule.AddResult()
+  const params = new SceneItemDto({ bookId: bookId.value, chapterId: chapterId.value })
+  EditorModule.SetSceneItem(params);
+  console.log('sceneItem---------->', sceneItem)
 }
 // 添加选择项
 const addChoice = () => {
