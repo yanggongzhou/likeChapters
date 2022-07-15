@@ -1,9 +1,10 @@
 import { VuexModule, Module, Mutation, Action, getModule } from 'vuex-module-decorators'
 import store from '@/store'
 import { IEditorModuleState } from '@/store/modules/index.model';
-import { ISceneItem } from "@/interfaces/editor.interfaces";
+import { INodeItem, ISceneItem } from "@/interfaces/editor.interfaces";
 import { ListNode } from "@/api/editor";
-import { SceneItemDto } from "@/utils/resultModule";
+import storyBus from "@/utils/storyBus";
+import { AnalyseEditorData } from "@/utils/resultModule";
 
 @Module({
   dynamic: true,
@@ -14,7 +15,8 @@ import { SceneItemDto } from "@/utils/resultModule";
 class EDITOR extends VuexModule implements IEditorModuleState {
   public isExpand = false // 是否展开
   public activeNodeId = '' // active的节点id
-  public sceneList = [] as Array<ISceneItem>;
+  public nodeList = [] as Array<INodeItem>;
+  public nodeItem = {} as INodeItem;
   public sceneItem = {} as ISceneItem;
 
   @Mutation
@@ -39,8 +41,8 @@ class EDITOR extends VuexModule implements IEditorModuleState {
 
   // 设置输出
   @Mutation
-  private SET_RESULT(res: ISceneItem[]) {
-    this.sceneList = JSON.parse(JSON.stringify(res));
+  private SET_RESULT(res: INodeItem[]) {
+    this.nodeList = JSON.parse(JSON.stringify(res));
   }
 
   @Mutation
@@ -55,8 +57,10 @@ class EDITOR extends VuexModule implements IEditorModuleState {
 
   @Action
   public async Init({ bookId, chapterId }: { bookId: string, chapterId: string }) {
-    const list = await ListNode(bookId, chapterId)
-    this.SET_RESULT(list)
+    const list = await ListNode(bookId, chapterId);
+    const g6EditorData = AnalyseEditorData(list);
+    this.SET_RESULT(list);
+    storyBus.emit('EditorModule/refreshData', g6EditorData)
   }
 }
 

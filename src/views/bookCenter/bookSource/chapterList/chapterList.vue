@@ -49,7 +49,7 @@
 import EditChapterDialog from './editChapter.vue'
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import {
   AddChapter, DeleteChapter,
   EditChapter,
@@ -143,6 +143,10 @@ onMounted(() => {
   chapterData.getListChapter()
   resizeDom()
   window.addEventListener('resize', resizeDom)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', resizeDom)
 })
 
 const tableMaxHeight = ref(284); // 表格最大高度

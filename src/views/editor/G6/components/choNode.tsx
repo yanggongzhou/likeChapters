@@ -34,7 +34,7 @@ export const fittingString = (str: string, maxWidth = 90, fontSize = 12) => {
 
 const CustomNode = (cfg: ModelConfig & { info: ISceneItem }): ShapeOptions | ShapeDefine => {
   // const typeName = TemplateTypeZhEnum[cfg.info.type]
-  const typeName = '123454444'
+  const typeName = cfg.info.sceneContent;
   return `
     <group style={{ cursor: 'pointer' }}>
       <rect style={{
@@ -49,7 +49,7 @@ const CustomNode = (cfg: ModelConfig & { info: ISceneItem }): ShapeOptions | Sha
           stroke: ${cfg.color}
         }} draggable="true">
           <text style={{
-            marginLeft: 30,
+            marginLeft: 20,
             fill: '#fff' }}>${typeName}</text>
         </rect>
         <rect style={{
@@ -60,7 +60,7 @@ const CustomNode = (cfg: ModelConfig & { info: ISceneItem }): ShapeOptions | Sha
           fill: '#ffffff',
           radius: [0, 0, 6, 6]
         }}>
-        <text style={ { marginTop: 5, marginLeft: 10, fill: '#333' } }> ${fittingString(cfg.info.content || '')} </text>
+        <text style={ { marginTop: 5, marginLeft: 10, fill: '#333' } }> ${fittingString(cfg.info.sceneContent || '')} </text>
         </rect>
       </rect>
     </group>`

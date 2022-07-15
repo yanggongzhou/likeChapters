@@ -41,7 +41,7 @@ import { ElForm } from "element-plus";
 import { EBoolean } from "@/interfaces/common.interfaces";
 
 export interface INodeForm {
-  id: string | number;
+  id?: string;
   previousNodeId: string | number;
   bookId: string | number;
   chapterId: string | number;

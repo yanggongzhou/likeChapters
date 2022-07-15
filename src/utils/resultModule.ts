@@ -1,4 +1,6 @@
-import { EmotionEnum, ISceneItem, PositionEnum, TemplateTypeEnum } from "@/interfaces/editor.interfaces";
+import { EmotionEnum, INodeItem, ISceneItem, PositionEnum, TemplateTypeEnum } from "@/interfaces/editor.interfaces";
+import { GraphData, NodeConfig } from "@antv/g6";
+import { EdgeConfig } from "@antv/g6-core/lib/types";
 
 // 生成随机ID
 export function getGuid():string {
@@ -52,4 +54,36 @@ export class SceneItemDto {
   sceneContent?: string; // 场景标题｜内容
   options?: string[]; // 对话选项
   selections?: string[]; // 服饰选项
+}
+
+// 转换数据 ---
+export const AnalyseEditorData = (nodeVOS: INodeItem[]): GraphData => {
+  const nodeData = {
+    nodes: [],
+    edges: []
+  } as GraphData; // 编导路径图
+  // 第一步 得到块
+  nodeData.nodes = nodeVOS.map(item => ({
+    info: { ...item },
+    id: item.id,
+    label: item.sceneContent
+  } as NodeConfig & { info: INodeItem }))
+  // 第二步 分析节点内sceneList 得到线
+  nodeVOS.forEach(item => {
+    if (Array.isArray(item.sceneList) && item.sceneList.length > 0) {
+      const lastScene = item.sceneList[item.sceneList.length - 1]
+      let edgesTargetData: string[] = [];
+      if (lastScene.type === TemplateTypeEnum.对话分支) {
+        edgesTargetData = lastScene.options || [];
+      } else if (lastScene.type === TemplateTypeEnum.头发分支 || lastScene.type === TemplateTypeEnum.衣服分支 || lastScene.type === TemplateTypeEnum.皮肤分支) {
+        edgesTargetData = lastScene.selections || [];
+      }
+      const edgesArr = edgesTargetData.map(opt => ({
+        source: item.id,
+        target: opt
+      } as EdgeConfig)) || [];
+      nodeData.edges = nodeData.edges?.concat(edgesArr)
+    }
+  });
+  return nodeData;
 }

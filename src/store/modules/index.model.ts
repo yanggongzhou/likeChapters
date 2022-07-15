@@ -1,7 +1,7 @@
 import { EBoolean } from "@/interfaces/common.interfaces";
 import { LookTypeEnum, MaterialTypeEnum } from "@/interfaces/material.interfaces";
 import { ICharacterListItem, IDressUpItem } from "@/interfaces/character.interfaces";
-import { ISceneItem, TemplateTypeEnum } from "@/interfaces/editor.interfaces";
+import { INodeItem, ISceneItem, TemplateTypeEnum } from "@/interfaces/editor.interfaces";
 
 // user
 export interface IUserState {
@@ -88,6 +88,7 @@ export interface IChoreographerState {
 export interface IEditorModuleState {
   isExpand: boolean;
   activeNodeId?: string;
-  sceneList: Array<ISceneItem>;
+  nodeList: INodeItem[];
+  nodeItem: INodeItem;
   sceneItem: ISceneItem;
 }

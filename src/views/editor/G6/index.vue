@@ -31,6 +31,7 @@ import { getGuid } from "@/utils/resultModule";
 import { ChoreographerModule } from "@/store/modules/choreographer";
 import { debounce } from "lodash";
 import { TemplateTypeEnum } from "@/interfaces/editor.interfaces";
+import { GraphTimingEvents } from "@antv/g6-core/lib/types";
 
 const optionForm = reactive<IOptionForm>({} as IOptionForm)
 const nodeForm = reactive<INodeForm>({} as INodeForm)
@@ -54,7 +55,8 @@ onMounted(() => {
   storyGraph.graphInstance.on("click", canvasClick);
   storyGraph.graphInstance.on("node:click", nodeClick);
   storyGraph.graphInstance.on("mousemove", onMousemove);
-  storyGraph.graphInstance.on('nodeselectchange', (e) => {
+  const eventsName = 'nodeselectchange' as GraphTimingEvents;
+  storyGraph.graphInstance.on(eventsName, (e) => {
     console.log(e.selectedItems, e.select);
     console.log(e)
   });
@@ -66,7 +68,7 @@ onMounted(() => {
   storyBus.on('G6/EditOption', editOption as any);
   storyBus.on('G6/DeleteOption', deleteOption as any);
   storyBus.on('G6/InsertNode', insertNode as any)
-  storyBus.on('ChoreographerModule/refreshData', refreshData as any)
+  storyBus.on('EditorModule/refreshData', refreshData as any)
 
   window.addEventListener('resize', choResize)
 })
