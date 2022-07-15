@@ -2,48 +2,27 @@
   <div class="editor-container">
     <div id="choreographerMind"></div>
     <div id="storyMiniMap"></div>
-    <EditNodeDialog :form="nodeForm" :visible="isEditNode" @close="isEditNode = false" @confirm="editNodeConfirm"></EditNodeDialog>
-    <EditOption :form="optionForm" :visible="isEditOption" @close="isEditOption = false" @confirm="editOptionConfirm"></EditOption>
   </div>
 </template>
 
 <script lang="ts" setup>
-import EditOption, { IOptionForm } from './components/editOption.vue'
-import EditNodeDialog, { INodeForm } from './components/editNode.vue'
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import useStoryGraph, { IUseStoryGraph } from "@/views/editor/G6/components/index";
 import { IG6GraphEvent, Item } from "@antv/g6-core";
 import storyBus from "@/utils/storyBus";
 import { GraphData, IEdge, INode } from "@antv/g6";
-import {
-  AddLine,
-  AddNode,
-  EditNode,
-  DeleteLine,
-  DeleteNode,
-  EditLine,
-  IEditNodeParam,
-  IAddNodeParam
-} from "@/api/gsEditor";
 import { onBeforeRouteLeave, useRoute } from "vue-router";
 import { EBoolean } from "@/interfaces/common.interfaces";
-import { getGuid } from "@/utils/resultModule";
-import { ChoreographerModule } from "@/store/modules/choreographer";
 import { debounce } from "lodash";
 import { TemplateTypeEnum } from "@/interfaces/editor.interfaces";
-import { GraphTimingEvents } from "@antv/g6-core/lib/types";
-
-const optionForm = reactive<IOptionForm>({} as IOptionForm)
-const nodeForm = reactive<INodeForm>({} as INodeForm)
+import { AddNode, DeleteNode } from "@/api/editor";
+import { EditorModule } from "@/store/modules/editor";
 
 const route = useRoute();
 const bookId = computed(() => route.query.bookId as string) // 书籍id
 const chapterId = computed(() => route.query.chapterId as string) // 章节id
 
-const isEditNode = ref(false)
-const isEditOption = ref(false)
-
-const activeNodeId = computed(() => ChoreographerModule.activeNodeId)
+const activeNodeId = computed(() => EditorModule.activeNodeId)
 const storyGraph = reactive<IUseStoryGraph>({} as IUseStoryGraph)
 const testEdge = ref()
 const addingEdge = ref(false)
@@ -55,14 +34,8 @@ onMounted(() => {
   storyGraph.graphInstance.on("click", canvasClick);
   storyGraph.graphInstance.on("node:click", nodeClick);
   storyGraph.graphInstance.on("mousemove", onMousemove);
-  const eventsName = 'nodeselectchange' as GraphTimingEvents;
-  storyGraph.graphInstance.on(eventsName, (e) => {
-    console.log(e.selectedItems, e.select);
-    console.log(e)
-  });
 
   storyBus.on('G6/AddNode', addNode as any);
-  storyBus.on('G6/EditNode', editNode as any)
   storyBus.on('G6/DeleteNode', deleteNode as any);
   storyBus.on('G6/AddEdge', addEdge as any);
   storyBus.on('G6/EditOption', editOption as any);
@@ -107,7 +80,7 @@ const canvasClick = (evt: IG6GraphEvent) => {
   }
 }
 
-watch(() => ChoreographerModule.activeNodeId, (newValue, oldValue) => {
+watch(() => EditorModule.activeNodeId, (newValue, oldValue) => {
   const oldItem = storyGraph.graphInstance.findById(oldValue)
   oldItem && storyGraph.graphInstance.updateItem(oldItem, { color: '#9191fd' })
   const newItem = storyGraph.graphInstance.findById(newValue)
@@ -118,26 +91,27 @@ const nodeClick = async (evt: IG6GraphEvent) => {
   const model = evt.item?.getModel();
   // 添加线
   if (addingEdge.value && testEdge.value) {
-    if (testEdge.value?._cfg?.model?.source === evt.item?.getModel().id) return; // 禁止自选闭环
+    if (testEdge.value?._cfg?.model?.source === model?.id) return; // 禁止自选闭环
     const testEdgeModel = testEdge.value.getModel();
     // 添加指向
-    await AddLine({
-      bookId: bookId.value,
-      chapterId: chapterId.value,
-      previousNodeId: testEdgeModel.source,
-      nextNodeId: model?.id as string,
-      content: testEdgeModel.label, // 选项内容、名称
-      optionType: TemplateTypeEnum.选项, // 选项类型 通用分支类型
-      free: EBoolean.yes, // 是否免费
-      coin: 0, // 钱币
-    })
+    // await AddLine({
+    //   bookId: bookId.value,
+    //   chapterId: chapterId.value,
+    //   previousNodeId: testEdgeModel.source,
+    //   nextNodeId: model?.id as string,
+    //   content: testEdgeModel.label, // 选项内容、名称
+    //   optionType: TemplateTypeEnum.选项, // 选项类型 通用分支类型
+    //   free: EBoolean.yes, // 是否免费
+    //   coin: 0, // 钱币
+    // })
     testEdge.value = undefined;
     addingEdge.value = false;
 
-    await ChoreographerModule.GetChapterList({ bookId: bookId.value, chapterId: chapterId.value });
+    await EditorModule.Init({ bookId: bookId.value, chapterId: chapterId.value });
   } else {
-    if (evt.item?.getModel().id === activeNodeId.value) return
-    storyBus.emit('saveNode', evt.item?.getModel() as any)
+    if (model && model.id !== activeNodeId.value) {
+      EditorModule.SetActiveNodeId(model?.id as string);
+    }
   }
 }
 
@@ -152,77 +126,10 @@ const onMousemove = (ev: IG6GraphEvent) => {
 }
 
 const addNode = async (item: Item): Promise<void> => {
-  isEditNode.value = true
-  const model = item.getModel();
-  nodeForm.id = void 0;
-  nodeForm.previousNodeId = model?.id as string;
-  nodeForm.content = `<p class="sceneheading" id="${getGuid()}"><br></p>`;
-  nodeForm.bookId = bookId.value;
-  nodeForm.chapterId = chapterId.value;
-  nodeForm.nodeName = '';
-  nodeForm.nodeIntro = '';
-  nodeForm.startNode = EBoolean.no;
-  nodeForm.totalNum = 0;
+  await AddNode({ bookId: bookId.value, chapterId: chapterId.value });
+  await EditorModule.Init({ bookId: bookId.value, chapterId: chapterId.value });
   insertNodeData.oldEdges = [];
   insertNodeData.isInsertNode = false;
-}
-
-const editNode = async (item: Item): Promise<void> => {
-  isEditNode.value = true
-  const model = item.getModel() as unknown as INodeForm;
-  nodeForm.id = model.id;
-  nodeForm.previousNodeId = model.previousNodeId;
-  nodeForm.content = model.content;
-  nodeForm.bookId = model.bookId;
-  nodeForm.chapterId = model.chapterId;
-  nodeForm.nodeName = model.nodeName;
-  nodeForm.nodeIntro = model.nodeIntro;
-  nodeForm.startNode = model.startNode;
-  nodeForm.totalNum = model.totalNum;
-  insertNodeData.oldEdges = [];
-  insertNodeData.isInsertNode = false;
-}
-
-const editNodeConfirm = async (nodeData: INodeForm) => {
-  if (nodeData.id) {
-    await EditNode({ ...nodeData, previousNodeId: undefined } as IEditNodeParam)
-  } else {
-    const { id = '' } = await AddNode({ ...nodeData, previousNodeId: undefined } as IAddNodeParam)
-    // 添加指向
-    await AddLine({
-      bookId: bookId.value,
-      chapterId: chapterId.value,
-      previousNodeId: nodeData.previousNodeId,
-      nextNodeId: id,
-      content: '', // 选项内容、名称
-      optionType: TemplateTypeEnum.选项, // 选项类型 通用分支类型
-      free: EBoolean.yes, // 是否免费
-      coin: 0, // 钱币
-    })
-
-    if (insertNodeData.isInsertNode) {
-      insertNodeData.oldEdges.forEach(edgeItem => {
-        const edgeItemModel = edgeItem.getModel() as unknown as IOptionForm & { optionId: string};
-        const optionDetail = {
-          id: edgeItemModel.optionId,
-          content: edgeItemModel.content,
-          bookId: edgeItemModel.bookId,
-          chapterId: edgeItemModel.chapterId,
-          previousNodeId: id,
-          nextNodeId: edgeItemModel.nextNodeId,
-          optionType: edgeItemModel.optionType,
-          free: edgeItemModel.free,
-          coin: edgeItemModel.coin,
-        }
-        EditLine({
-          ...optionDetail,
-        })
-      })
-    }
-  }
-
-  await ChoreographerModule.GetChapterList({ bookId: bookId.value, chapterId: chapterId.value });
-  isEditNode.value = false
 }
 
 const addEdge = (item: Item) => {
@@ -247,35 +154,16 @@ const addEdge = (item: Item) => {
 const deleteNode = async (item: INode) => {
   const model = item.getModel();
   await DeleteNode(model.id as string)
-  await ChoreographerModule.GetChapterList({ bookId: bookId.value, chapterId: chapterId.value });
+  await EditorModule.Init({ bookId: bookId.value, chapterId: chapterId.value });
 }
 
 const editOption = (item: Item) => {
-  isEditOption.value = true
-  const { optionId, content, bookId, chapterId, previousNodeId, nextNodeId, optionType, free, coin } = item.getModel() as unknown as IOptionForm & { optionId: string};
-  optionForm.id = optionId;
-  optionForm.content = content;
-  optionForm.bookId = bookId;
-  optionForm.chapterId = chapterId;
-  optionForm.previousNodeId = previousNodeId;
-  optionForm.nextNodeId = nextNodeId;
-  optionForm.optionType = optionType;
-  optionForm.free = free;
-  optionForm.coin = coin;
-}
-// 编辑选项确认
-const editOptionConfirm = async (optionDetail: IOptionForm) => {
-  await EditLine({
-    ...optionDetail,
-  })
-  // 钻石配置到下个节点中， 晚些实现
-  isEditOption.value = false
-  await ChoreographerModule.GetChapterList({ bookId: bookId.value, chapterId: chapterId.value });
+  // const { optionId, content, bookId, chapterId, previousNodeId, nextNodeId, optionType, free, coin } = item.getModel() as unknown as IOptionForm & { optionId: string};
 }
 const deleteOption = async (item: Item) => {
   const { optionId } = item.getModel();
-  await DeleteLine(optionId as string)
-  await ChoreographerModule.GetChapterList({ bookId: bookId.value, chapterId: chapterId.value });
+  // await DeleteLine(optionId as string)
+  await EditorModule.Init({ bookId: bookId.value, chapterId: chapterId.value });
 }
 
 // 插入节点前的连线
@@ -286,17 +174,8 @@ const insertNodeData = reactive<{oldEdges: IEdge[]; isInsertNode: boolean}>({
 
 const isInsertNode = ref(false)
 const insertNode = (item: INode) => {
-  isEditNode.value = true
-  const model = item.getModel();
-  nodeForm.id = void 0;
-  nodeForm.previousNodeId = model?.id as string;
-  nodeForm.content = `<p class="sceneheading" id="${getGuid()}"><br></p>`;
-  nodeForm.bookId = bookId.value;
-  nodeForm.chapterId = chapterId.value;
-  nodeForm.nodeName = '';
-  nodeForm.nodeIntro = '';
-  nodeForm.startNode = EBoolean.no;
-  nodeForm.totalNum = 0;
+  // const model = item.getModel();
+  // nodeForm.previousNodeId = model?.id as string;
 
   const itemEdges = item.getEdges() || [] as IEdge[];
   const itemId = item.getModel().id;
@@ -306,13 +185,12 @@ const insertNode = (item: INode) => {
 
 onBeforeRouteLeave((to, from, next) => {
   storyBus.off('G6/AddNode', addNode as any);
-  storyBus.off('G6/EditNode', editNode as any)
   storyBus.off('G6/DeleteNode', deleteNode as any);
   storyBus.off('G6/AddEdge', addEdge as any);
   storyBus.off('G6/EditOption', editOption as any);
   storyBus.off('G6/DeleteOption', deleteOption as any);
   storyBus.off('G6/InsertNode', insertNode as any)
-  storyBus.off('ChoreographerModule/refreshData', refreshData as any)
+  storyBus.off('EditorModule/refreshData', refreshData as any)
   window.removeEventListener('resize', choResize)
   next()
 })

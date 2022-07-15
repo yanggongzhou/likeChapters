@@ -48,7 +48,7 @@ export const ListNode = async (bookId: string, chapterId: string): Promise<INode
  * 新增保存子节点
  * @param param 参数
  */
-export const AddNode = async (param: SceneItemDto) => {
+export const AddNode = async (param: INodeItem) => {
   return await Service.post('/node/save', param)
 }
 
@@ -56,7 +56,7 @@ export const AddNode = async (param: SceneItemDto) => {
  * 编辑保存子节点
  * @param param 参数
  */
-export const EditNode = async (param: SceneItemDto) => {
+export const EditNode = async (param: INodeItem) => {
   return await Service.put('/node/edit', param)
 }
 

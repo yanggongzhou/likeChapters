@@ -3,6 +3,7 @@
     content
     <SceneDetail v-model="scene"/>
     <MessageDetail
+      :sceneItem="sceneItem"
       :characterList="characterList"
     />
     <ControlLine
@@ -27,7 +28,7 @@ import { ListCharacter } from "@/api/characterCenter";
 const route = useRoute();
 const bookId = computed(() => route.query.bookId as string);
 const chapterId = computed(() => route.query.chapterId as string);
-const characterList = ref<ICharacterListItem>([])
+const characterList = ref<ICharacterListItem[]>([])
 const sceneItem = computed(() => EditorModule.sceneItem);
 
 onBeforeMount(async () => {
@@ -40,7 +41,7 @@ const addMessage = () => {
   console.log('添加消息框')
   const params = new SceneItemDto({ bookId: bookId.value, chapterId: chapterId.value })
   EditorModule.SetSceneItem(params);
-  console.log('sceneItem---------->', sceneItem)
+  console.log('sceneItem---------->', sceneItem.value)
 }
 // 添加选择项
 const addChoice = () => {

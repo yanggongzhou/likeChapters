@@ -2,11 +2,6 @@ import { EmotionEnum, INodeItem, ISceneItem, PositionEnum, TemplateTypeEnum } fr
 import { GraphData, NodeConfig } from "@antv/g6";
 import { EdgeConfig } from "@antv/g6-core/lib/types";
 
-// 生成随机ID
-export function getGuid():string {
-  return `r${new Date().getTime()}d${Math.ceil(Math.random() * 1000)}`;
-}
-
 // 节点子项数据模型
 export class SceneItemDto {
   constructor(obj: ISceneItem) {

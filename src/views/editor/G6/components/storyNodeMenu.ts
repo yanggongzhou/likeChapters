@@ -16,7 +16,6 @@ export const storyNodeMenu = (t: (key: Path | number) => string) => new G6.Menu(
   getContent (evt?: IG6GraphEvent): HTMLDivElement | string {
     return `<div class="storyMenuWarp">
         <div class="item" data-type="${MenuBtnEnum.ADDNODE}">${t('g6.addNode')}</div>
-        <div class="item" data-type="${MenuBtnEnum.EDIT}">${t('g6.editNode')}</div>
         <div class="item" data-type="${MenuBtnEnum.INSERTNODE}">${t('g6.insertNode')}</div>
          <div class="item" data-type="${MenuBtnEnum.ADDEDGE}">${t('g6.addOption')}</div>
         <div class="item del-btn" data-type="${MenuBtnEnum.DELETE}">${t('g6.delNode')}</div>
@@ -26,9 +25,6 @@ export const storyNodeMenu = (t: (key: Path | number) => string) => new G6.Menu(
     // console.log(target, item, target.dataset);
     if (target.dataset.type === MenuBtnEnum.ADDNODE) {
       storyBus.emit('G6/AddNode', item)
-    }
-    if (target.dataset.type === MenuBtnEnum.EDIT) {
-      storyBus.emit('G6/EditNode', item)
     }
     if (target.dataset.type === MenuBtnEnum.INSERTNODE) {
       storyBus.emit('G6/InsertNode', item)
