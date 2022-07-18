@@ -3,7 +3,6 @@ import { App, InjectionKey } from 'vue'
 import {
   IAppState,
   ICharacterCenterState,
-  IChoreographerState,
   IEditorModuleState,
   IUserState
 } from '@/store/modules/index.model';
@@ -12,7 +11,6 @@ export interface IStore {
   auth: IUserState; // 用户中心
   app: IAppState; // app其他信息
   characterCenter: ICharacterCenterState; // 角色中心
-  choreographer: IChoreographerState; // 编导
   editor: IEditorModuleState; // UGC
 }
 

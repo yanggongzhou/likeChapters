@@ -41,13 +41,13 @@ import LookContent from '@/views/materialCenter/part/look.vue'
 import { useI18n } from "vue-i18n";
 import { useRouter, useRoute } from "vue-router";
 import { computed, onMounted, onUnmounted, ref } from "vue";
-import { ListClothStyle } from "@/api/characterCenter";
+// import { ListClothStyle } from "@/api/characterCenter";
 import { CharacterCenterModule } from "@/store/modules/characterCenter";
 import { MaterialTypeEnum } from "@/interfaces/material.interfaces";
 const dataSource = ref()
 const getClothStyleList = async () => {
-  const { materialVOS } = await ListClothStyle()
-  dataSource.value = materialVOS
+  // const { materialVOS } = await ListClothStyle()
+  // dataSource.value = materialVOS
 }
 
 onMounted(() => {

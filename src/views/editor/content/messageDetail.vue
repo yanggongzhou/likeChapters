@@ -63,7 +63,9 @@ const editContent = (content: string) => {
 
 const saveScene = async () => {
   // if () {}
-  await AddScene({ ...props.sceneItem })
+  console.log('{ ...props.sceneItem }------>', { ...props.sceneItem })
+  await AddScene({ ...props.sceneItem });
+
 }
 
 const roleId = ref('')

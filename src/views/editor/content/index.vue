@@ -1,11 +1,12 @@
 <template>
   <div class="editor-content-wrap">
-    content
     <SceneDetail v-model="scene"/>
-    <MessageDetail
-      :sceneItem="sceneItem"
-      :characterList="characterList"
-    />
+    <template v-for="val in sceneList" :key="val.id">
+      <MessageDetail
+        :sceneItem="sceneItem"
+        :characterList="characterList"
+      />
+    </template>
     <ControlLine
       @message="addMessage"
       @choice="addChoice"
@@ -24,12 +25,15 @@ import { EditorModule } from "@/store/modules/editor";
 import { SceneItemDto } from "@/utils/resultModule";
 import { ICharacterListItem } from "@/interfaces/character.interfaces";
 import { ListCharacter } from "@/api/characterCenter";
+import { ISceneItem } from "@/interfaces/editor.interfaces";
 
 const route = useRoute();
 const bookId = computed(() => route.query.bookId as string);
 const chapterId = computed(() => route.query.chapterId as string);
 const characterList = ref<ICharacterListItem[]>([])
 const sceneItem = computed(() => EditorModule.sceneItem);
+const sceneList = computed(() => EditorModule.sceneList as ISceneItem[]);
+const activeNodeId = computed(() => EditorModule.activeNodeId as string);
 
 onBeforeMount(async () => {
   characterList.value = await ListCharacter(bookId.value)
@@ -39,7 +43,7 @@ const scene = ref('123')
 // 添加消息框
 const addMessage = () => {
   console.log('添加消息框')
-  const params = new SceneItemDto({ bookId: bookId.value, chapterId: chapterId.value })
+  const params = new SceneItemDto({ bookId: bookId.value, chapterId: chapterId.value, nodeId: activeNodeId.value })
   EditorModule.SetSceneItem(params);
   console.log('sceneItem---------->', sceneItem.value)
 }
@@ -56,6 +60,8 @@ const addLink = () => {
 
 <style lang="less" scoped>
 .editor-content-wrap {
-
+  height: 100%;
+  overflow: auto;
+  position: relative;
 }
 </style>

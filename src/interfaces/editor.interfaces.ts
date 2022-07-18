@@ -11,6 +11,7 @@ export interface ISceneItem {
   id?: string;
   bookId?: string;
   chapterId?: string;
+  nodeId?: string;
   sceneContent?: string; // 场景标题｜内容
   roleId?: string; // 角色Id role_id
   roleName?: string; // 角色名称

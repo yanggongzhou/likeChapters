@@ -5,12 +5,13 @@ import { EdgeConfig } from "@antv/g6-core/lib/types";
 // 节点子项数据模型
 export class SceneItemDto {
   constructor(obj: ISceneItem) {
-    if (!obj.bookId || !obj.chapterId) {
-      throw new Error('缺少实例参数 bookId ｜ chapterId')
+    if (!obj.bookId || !obj.chapterId || !obj.nodeId) {
+      throw new Error('缺少实例参数 bookId ｜ chapterId | nodeId')
     }
     this.id = obj.id || '';
     this.bookId = obj.bookId;
     this.chapterId = obj.chapterId;
+    this.nodeId = obj.nodeId;
     this.sceneNum = obj.sceneNum || '';
     this.roleId = obj.roleId;
     this.roleName = obj.roleName;
@@ -32,6 +33,7 @@ export class SceneItemDto {
   readonly id?: string;
   readonly bookId?: string;
   readonly chapterId?: string;
+  readonly nodeId?: string;
   sceneNum?: string; // 场景编号
   roleId?: string; // 角色Id role_id
   roleName?: string; // 角色名称

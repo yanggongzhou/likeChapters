@@ -44,6 +44,9 @@ onMounted(async () => {
     border-radius: 10px;
     background-color: #ffffff;
   }
+  .editor-content {
+    height: 100%;
+  }
   .editor-right {
     position: relative;
   }

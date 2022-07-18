@@ -4,11 +4,10 @@ import { INodeItem, ISceneItem } from "@/interfaces/editor.interfaces";
 
 /**
  * 章节node列表
- * @param bookId 书籍id
- * @param chapterId 章节id
+ * @param params
  */
-export const ListScene = async (bookId: string, chapterId: string): Promise<ISceneItem[]> => {
-  return await Service.get('/node/list', { params: { bookId, chapterId } })
+export const ListScene = async (params: { bookId: string; chapterId: string; nodeId: string; }): Promise<ISceneItem[]> => {
+  return await Service.get('/scene/list', { params: params })
 }
 
 /**
@@ -16,7 +15,7 @@ export const ListScene = async (bookId: string, chapterId: string): Promise<ISce
  * @param param 参数
  */
 export const AddScene = async (param: ISceneItem) => {
-  return await Service.post('/node/save', param)
+  return await Service.post('/scene/save', param)
 }
 
 /**
@@ -24,7 +23,7 @@ export const AddScene = async (param: ISceneItem) => {
  * @param param 参数
  */
 export const EditScene = async (param: ISceneItem) => {
-  return await Service.put('/node/edit', param)
+  return await Service.put('/scene/edit', param)
 }
 
 /**
@@ -32,7 +31,7 @@ export const EditScene = async (param: ISceneItem) => {
  * @param id 节点id
  */
 export const DeleteScene = async (id: string) => {
-  return await Service.delete('/node/delete', { params: { id } })
+  return await Service.delete('/scene/delete', { params: { id } })
 }
 
 /**

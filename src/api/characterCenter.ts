@@ -1,16 +1,6 @@
 import Service from '@/utils/request';
-import { EBoolean } from "@/interfaces/common.interfaces";
-import { ICharacterListItem, ICharacterParams, IDressUpItem, SexType } from "@/interfaces/character.interfaces";
+import { ICharacterListItem, ICharacterParams, IDressUpItem } from "@/interfaces/character.interfaces";
 
-export interface IBiographyForm {
-  id?: string | number;
-  bookId?: string | number;
-  biographyName?: string;
-  biographyIntro?: string;
-  biographyImg?: string;
-  sex?: SexType;
-  mainCharacter?: EBoolean;
-}
 /**
  * 添加角色
  * @param param 参数 IBiographyForm
@@ -75,39 +65,3 @@ export const EditCharacterLook = async ({ id, dressUpItem }: { id: string, dress
 export const DeleteCharacterLook = async ({ id, characterId }: { id: string, characterId: string }) => {
   return await Service.delete('/character/look/delete', { params: { id, characterId } })
 }
-
-/**
- * 获取素材
- */
-export const ListClothStyle = async () => {
-  return await Service.post('/script-editor/entry/4019')
-}
-
-export interface IAddStyleParam {
-  biographyId: string;
-  styleName: string;
-  defaultStyle: EBoolean;
-  material: string;
-}
-
-export interface IBiographyList {
-  id: string | number;
-  bookId: string | number;
-  biographyName: string;
-  biographyIntro: string;
-}
-/**
- * 获取场景列表
- * @param bookId 书籍Id
- */
-export const ListScene = async (bookId: string) => {
-  return await Service.post('/script-editor/entry/4038', { bookId })
-}
-/**
- * 编辑场景
- * @param param 参数 IBiographyForm
- */
-export const EditScene = async (param: IBiographyForm) => {
-  return await Service.post('/script-editor/entry/4039', { ...param })
-}
-
