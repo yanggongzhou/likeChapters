@@ -8,7 +8,7 @@ export class SceneItemDto {
     if (!obj.bookId || !obj.chapterId || !obj.nodeId) {
       throw new Error('缺少实例参数 bookId ｜ chapterId | nodeId')
     }
-    this.id = obj.id || '';
+    this.id = obj.id;
     this.bookId = obj.bookId;
     this.chapterId = obj.chapterId;
     this.nodeId = obj.nodeId;

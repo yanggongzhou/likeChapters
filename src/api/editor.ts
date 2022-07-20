@@ -15,7 +15,7 @@ export const ListScene = async (params: { bookId: string; chapterId: string; nod
  * @param param 参数
  */
 export const AddScene = async (param: ISceneItem) => {
-  return await Service.post('/scene/save', param)
+  return await Service.post('/node/scene/save', param)
 }
 
 /**
@@ -23,15 +23,15 @@ export const AddScene = async (param: ISceneItem) => {
  * @param param 参数
  */
 export const EditScene = async (param: ISceneItem) => {
-  return await Service.put('/scene/edit', param)
+  return await Service.put('/node/scene/edit', param)
 }
 
 /**
  * 删除节点/块
- * @param id 节点id
+ * @param params
  */
-export const DeleteScene = async (id: string) => {
-  return await Service.delete('/scene/delete', { params: { id } })
+export const DeleteScene = async (params: { id: string; nodeId: string }) => {
+  return await Service.delete('/node/scene/delete', { params })
 }
 
 /**

@@ -35,6 +35,7 @@
       </div>
 
       <el-button @click.stop="saveScene"> 保存</el-button>
+      <el-button @click.stop="delScene"> 删除</el-button>
     </div>
   </div>
 </template>
@@ -45,7 +46,7 @@ import { defineEmits, PropType, ref, defineProps } from "vue";
 import { ISceneItem, TemplateTypeEnum } from "@/interfaces/editor.interfaces";
 import { ICharacterListItem } from "@/interfaces/character.interfaces";
 import { EditorModule } from "@/store/modules/editor";
-import { AddScene } from "@/api/editor";
+import { AddScene, DeleteScene } from "@/api/editor";
 
 const emits = defineEmits(['message', 'choice', 'link']);
 const props = defineProps({
@@ -61,11 +62,17 @@ const editContent = (content: string) => {
   EditorModule.SetSceneItem({ ...props.sceneItem, content });
 }
 
+const delScene = async () => {
+  const { id, nodeId } = props.sceneItem;
+  console.log(' id, nodeId',  id, nodeId, props.sceneItem)
+  if (id && nodeId) {
+    await DeleteScene({ id, nodeId });
+  }
+}
 const saveScene = async () => {
   // if () {}
   console.log('{ ...props.sceneItem }------>', { ...props.sceneItem })
   await AddScene({ ...props.sceneItem });
-
 }
 
 const roleId = ref('')

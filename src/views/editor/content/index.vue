@@ -3,10 +3,14 @@
     <SceneDetail v-model="scene"/>
     <template v-for="val in sceneList" :key="val.id">
       <MessageDetail
-        :sceneItem="sceneItem"
+        :sceneItem="val"
         :characterList="characterList"
       />
     </template>
+    <MessageDetail
+      :sceneItem="sceneItem"
+      :characterList="characterList"
+    />
     <ControlLine
       @message="addMessage"
       @choice="addChoice"

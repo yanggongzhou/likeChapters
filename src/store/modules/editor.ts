@@ -2,7 +2,7 @@ import { VuexModule, Module, Mutation, Action, getModule } from 'vuex-module-dec
 import store from '@/store'
 import { IEditorModuleState } from '@/store/modules/index.model';
 import { INodeItem, ISceneItem } from "@/interfaces/editor.interfaces";
-import { ListNode, ListScene } from "@/api/editor";
+import { ListNode } from "@/api/editor";
 import storyBus from "@/utils/storyBus";
 import { AnalyseEditorData } from "@/utils/resultModule";
 
@@ -45,7 +45,7 @@ class EDITOR extends VuexModule implements IEditorModuleState {
   private SET_NODEITEM(res: INodeItem) {
     this.nodeItem = JSON.parse(JSON.stringify(res));
   }
-  // 设置输出
+
   @Mutation
   private SET_RESULT(res: INodeItem[]) {
     this.nodeList = JSON.parse(JSON.stringify(res));
@@ -74,8 +74,8 @@ class EDITOR extends VuexModule implements IEditorModuleState {
     storyBus.emit('EditorModule/refreshData', g6EditorData)
     this.SET_NODEITEM(list[0]);
     this.SET_ACTIVENODEID(list[0].id as string);
-    const sceneList = await ListScene({ bookId, chapterId, nodeId: list[0].id as string })
-    this.SET_SCENELIST(sceneList);
+    // const sceneList = await ListScene({ bookId, chapterId, nodeId: list[0].id as string })
+    this.SET_SCENELIST(list[0]?.sceneList || []);
   }
 }
 
