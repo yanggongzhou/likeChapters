@@ -2,18 +2,33 @@
   <div class="tag-wrap" @click="goToBranch">
     <div class="tag-content_left">
       <span class="title">Branch</span>
-      <el-tag class="tag" v-for="val in 3" :key="val" closable type="danger" effect="Dark">choice {{ val }}</el-tag>
+      <el-tag class="tag" v-for="val in 3" :key="val" closable type="danger" effect="dark">choice {{ val }}</el-tag>
     </div>
     <div class="del-btn" @click.stop="delBranch">x</div>
   </div>
 </template>
 <script lang="ts" setup>
+import { defineEmits, defineProps, PropType } from "vue";
+import { DeleteBranch } from "@/api/editor";
+import { ISceneItem } from "@/interfaces/editor.interfaces";
 
-const delBranch = () => {
-  console.log('delBranch-----_>',)
+const emits = defineEmits(['goToBranch', 'refresh']);
+const props = defineProps({
+  branchData: {
+    type: Object as PropType<ISceneItem>,
+    required: true,
+  }
+})
+
+const delBranch = async () => {
+  const { id, nodeId } = props.branchData
+  if (id && nodeId) {
+    await DeleteBranch({ id, nodeId })
+    emits('refresh')
+  }
 }
 const goToBranch = () => {
-  console.log('goToBranch-----_>',)
+  emits('goToBranch')
 }
 
 </script>

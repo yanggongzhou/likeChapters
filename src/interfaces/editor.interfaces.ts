@@ -18,7 +18,7 @@ export interface ISceneItem {
   look?: string; // 装扮类型
   emotion?: EmotionEnum; // 表情
   content?: string; // 内容
-  type?: TemplateTypeEnum; // 节点类型
+  type: TemplateTypeEnum; // 节点类型
   nextId?: string; // 下个节点 next_id
   cameraPos?: PositionEnum; // 镜头 camera_pos
   posId?: PositionEnum; // 位置 pos_id

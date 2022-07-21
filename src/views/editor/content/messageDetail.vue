@@ -1,12 +1,12 @@
 <template>
-<!--  :class="{'isActive': isEdit}"-->
+  <!--  :class="{'isActive': isEdit}"-->
   <div class="message-detail-wrap">
     <div class="message-content">
       <div class="message-title">
         <div class="message-title_select">
           <el-dropdown @command="dialogTypeChange" trigger="click">
             <span class="el-dropdown-link">
-              {{ TemplateTypeEnumZh[sceneData.type] }} <el-icon class="el-icon--right"><arrow-down /></el-icon>
+              {{ TemplateTypeEnumZh[sceneData.type] }} <el-icon class="el-icon--right"><arrow-down/></el-icon>
             </span>
             <template #dropdown>
               <el-dropdown-menu>
@@ -17,9 +17,9 @@
             </template>
           </el-dropdown>
 
-          <el-dropdown @command="roleChange" trigger="click"  v-if="sceneData.type !== TemplateTypeEnum.旁白">
+          <el-dropdown @command="roleChange" trigger="click" v-if="sceneData.type !== TemplateTypeEnum.旁白">
             <span class="el-dropdown-link">
-              {{ sceneData.roleName || '角色' }} <el-icon class="el-icon--right"><arrow-down /></el-icon>
+              {{ sceneData.roleName || '角色' }} <el-icon class="el-icon--right"><arrow-down/></el-icon>
             </span>
             <template #dropdown>
               <el-dropdown-menu>
@@ -27,7 +27,8 @@
                   v-for="character in characterList"
                   :key="character.id"
                   :command="character.id"
-                >{{ character.characterName }}</el-dropdown-item>
+                >{{ character.characterName }}
+                </el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -52,7 +53,9 @@
       </div>
       <div class="message-detail_del" @click.stop="delScene">x</div>
       <div v-if="!isEdit" class="message-detail_edit">
-        <el-icon @click="chooseScene"><Edit /></el-icon>
+        <el-icon @click="chooseScene">
+          <Edit/>
+        </el-icon>
       </div>
     </div>
   </div>
@@ -149,7 +152,11 @@ const saveScene = async () => {
   await EditorModule.Init({ bookId: bookId.value, chapterId: chapterId.value })
   EditorModule.SetActiveNodeId(EditorModule.activeNodeId);
   // 清除编辑状态
-  const params = new SceneItemDto({ bookId: bookId.value, chapterId: chapterId.value, nodeId: EditorModule.activeNodeId })
+  const params = new SceneItemDto({
+    bookId: bookId.value,
+    chapterId: chapterId.value,
+    nodeId: EditorModule.activeNodeId
+  } as ISceneItem)
   EditorModule.SetSceneItem(params);
 }
 
@@ -175,12 +182,14 @@ const chooseScene = () => {
     font-weight: 500;
     font-size: 14px;
     color: #5a5e66;
+
     .message-title {
       display: flex;
       justify-content: space-between;
       background-color: #f3f3fc;
       border-radius: 8px 8px 0 0;
       padding: 10px 30px;
+
       .message-title_select {
         font-size: 14px;
         display: flex;
@@ -189,9 +198,11 @@ const chooseScene = () => {
         width: 180px;
       }
     }
+
     .message-content {
       position: relative;
       padding: 20px;
+
       .message-content_btn {
         position: absolute;
         bottom: 20px;
@@ -207,22 +218,25 @@ const chooseScene = () => {
         font-weight: 500;
         cursor: pointer;
         transition: opacity 0.5s;
+
         &:hover {
           opacity: 0.8;
         }
       }
 
-      /deep/.el-textarea__inner {
+      /deep/ .el-textarea__inner {
         border-radius: 8px;
         padding: 15px;
         font-weight: 500;
         font-size: 16px;
       }
-      /deep/.el-textarea .el-input__count {
+
+      /deep/ .el-textarea .el-input__count {
         right: 100px;
       }
     }
   }
+
   .message-detail_del {
     position: absolute;
     top: 0;
@@ -236,10 +250,12 @@ const chooseScene = () => {
     text-align: center;
     transition: opacity 0.5s;
     opacity: 0;
+
     &:hover {
       opacity: 0.8;
     }
   }
+
   .message-detail_edit {
     position: absolute;
     bottom: 0;
@@ -256,19 +272,23 @@ const chooseScene = () => {
     cursor: pointer;
     transition: opacity 0.5s;
     opacity: 0;
+
     &:hover {
       opacity: 0.8;
     }
   }
+
   &:hover {
-    .message-detail_edit{
+    .message-detail_edit {
       opacity: 1;
     }
+
     .message-detail_del {
       opacity: 1;
     }
   }
 }
+
 .isActive {
   border: 1px solid #9191fd;
 }

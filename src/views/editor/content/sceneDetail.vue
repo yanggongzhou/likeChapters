@@ -1,16 +1,25 @@
 <template>
   <div class="edit-scene-wrap">
+    <div class="back-to-scene" v-if="isBranch === '1'">
+      <el-icon v-waves @click="goBack">
+        <arrow-left-bold/>
+      </el-icon>
+    </div>
     <span>Scene</span>
     <el-input v-model="modelValue" @focusout="focusout"></el-input>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { onBeforeMount, ref, watch } from "vue";
+import { computed, onBeforeMount, ref, watch } from "vue";
 import { EditorModule } from "@/store/modules/editor";
 import { EditNode } from "@/api/editor";
+import { useRoute, useRouter } from "vue-router";
 
 const modelValue = ref('');
+const route = useRoute();
+const router = useRouter();
+const isBranch = computed(() => route.query.isBranch as string);
 
 onBeforeMount(() => {
   modelValue.value = EditorModule.nodeItem?.sceneContent || '';
@@ -19,6 +28,10 @@ onBeforeMount(() => {
 watch(() => EditorModule.nodeItem, () => {
   modelValue.value = EditorModule.nodeItem?.sceneContent || '';
 }, { deep: true })
+
+const goBack = () => {
+  router.replace({ name: 'editor', query: { ...route.query, isBranch: 0 } });
+}
 
 const focusout = async () => {
   if (modelValue.value === EditorModule.nodeItem?.sceneContent) return;
@@ -41,6 +54,12 @@ const focusout = async () => {
   box-sizing: border-box;
   display: flex;
   align-items: center;
+  .back-to-scene {
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 20px;
+  }
   span {
     margin-right: 20px;
   }

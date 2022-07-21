@@ -1,104 +1,117 @@
 <template>
-  <div class="message-detail-wrap">
-    <div class="message-content">
-      <div class="message-title">
-        <div class="message-title_select">
-          <el-dropdown @command="dialogTypeChange" trigger="click">
+  <div class="branch-wrap">
+    <div class="message-detail-wrap">
+      <div class="message-content">
+        <div class="message-title">
+          <div class="message-title_select">
+            <el-dropdown @command="dialogTypeChange" trigger="click">
             <span class="el-dropdown-link">
               {{ TemplateTypeEnumZh[sceneData.type] }} <el-icon class="el-icon--right"><arrow-down /></el-icon>
             </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item :command="TemplateTypeEnum.对话分支">对话分支</el-dropdown-item>
-                <el-dropdown-item :command="TemplateTypeEnum.衣服分支">衣服分支</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item :command="TemplateTypeEnum.对话分支">对话分支</el-dropdown-item>
+                  <el-dropdown-item :command="TemplateTypeEnum.衣服分支">衣服分支</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
 
-          <el-dropdown @command="roleChange" trigger="click">
+            <el-dropdown @command="roleChange" trigger="click">
             <span class="el-dropdown-link">
               {{ sceneData.roleName || '角色' }} <el-icon class="el-icon--right"><arrow-down /></el-icon>
             </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item
-                  v-for="character in characterList"
-                  :key="character.id"
-                  :command="character.id"
-                >{{ character.characterName }}</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item
+                    v-for="character in characterList"
+                    :key="character.id"
+                    :command="character.id"
+                  >{{ character.characterName }}</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </div>
+          <SceneOthers/>
         </div>
-        <SceneOthers/>
-      </div>
 
-      <div class="message-content">
-        <el-input
-          v-model="sceneData.content"
-          @focusout="saveBranch"
-          maxlength="30"
-          placeholder="Please input"
-          :autosize="{ minRows: 2 }"
-          show-word-limit
-          type="textarea"
-        />
+        <div class="message-content">
+          <el-input
+            v-model="sceneData.content"
+            @focusout="saveBranch"
+            maxlength="30"
+            placeholder="Please input"
+            :autosize="{ minRows: 2 }"
+            show-word-limit
+            type="textarea"
+          />
+        </div>
       </div>
     </div>
+    <OptionMessage
+      v-for="val in branchData.options"
+      :key="val"
+      :id="val"
+      :book-id="bookId"
+      :chapter-id="chapterId"
+      :node-id="nodeId"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
+import OptionMessage from '@/views/editor/content/branch/optionMessage.vue'
 import SceneOthers from '@/views/editor/content/others.vue'
-import { PropType, defineProps, reactive } from "vue";
-import { TemplateTypeEnum, TemplateTypeEnumZh } from "@/interfaces/editor.interfaces";
+import { PropType, defineProps, ref, defineEmits } from "vue";
+import { ISceneItem, TemplateTypeEnum, TemplateTypeEnumZh } from "@/interfaces/editor.interfaces";
 import { ICharacterListItem } from "@/interfaces/character.interfaces";
 import { EditorModule } from "@/store/modules/editor";
-import { AddScene } from "@/api/editor";
+import { AddScene, EditScene } from "@/api/editor";
 import { SceneItemDto } from "@/utils/resultModule";
 
 const props = defineProps({
-  characterList: Object as PropType<ICharacterListItem[]>,
+  characterList: Array as PropType<ICharacterListItem[]>,
   bookId: String,
   chapterId: String,
   nodeId: String,
+  branchData: {
+    type: Object as PropType<ISceneItem>,
+    required: true
+  },
 });
-
-const sceneData = reactive(new SceneItemDto({
-  bookId: props.bookId,
-  chapterId: props.chapterId,
-  nodeId: props.nodeId,
-  type: TemplateTypeEnum.对话分支,
-  content: ''
-}));
+const emits = defineEmits(['refresh'])
+const sceneData = ref<ISceneItem>(new SceneItemDto(props.branchData));
 
 const dialogTypeChange = (val: TemplateTypeEnum) => {
-  sceneData.type = val;
+  sceneData.value.type = val;
 }
 
 const roleChange = (roleId: string) => {
   const roleName = props.characterList?.find(val => val.id === roleId)?.characterName || '';
-  sceneData.roleId = roleId;
-  sceneData.roleName = roleName;
+  sceneData.value.roleId = roleId;
+  sceneData.value.roleName = roleName;
 }
 
 const saveScene = async () => {
-  await AddScene({ ...sceneData.value });
-  const { bookId, chapterId, nodeId } = props;
-  await EditorModule.Init({ bookId, chapterId })
-  EditorModule.SetActiveNodeId(nodeId);
-  // 清除编辑状态
-  const params = new SceneItemDto({ bookId, chapterId, nodeId })
-  EditorModule.SetSceneItem(params);
+  // await AddScene({ ...sceneData });
+  // const { bookId, chapterId, nodeId } = props;
+  // await EditorModule.Init({ bookId, chapterId })
+  // EditorModule.SetActiveNodeId(nodeId);
+  // // 清除编辑状态
+  // const params = new SceneItemDto({ bookId, chapterId, nodeId })
+  // EditorModule.SetSceneItem(params);
 }
 
-const saveBranch = () => {
-
+const saveBranch = async () => {
+  await EditScene({ ...sceneData.value });
+  emits('refresh');
 }
 
 </script>
 
 <style lang="less" scoped>
+.branch-wrap {
+
+}
 .message-detail-wrap {
   width: 100%;
   box-sizing: border-box;

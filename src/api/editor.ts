@@ -1,14 +1,5 @@
 import Service from '@/utils/request';
-import { SceneItemDto } from "@/utils/resultModule";
 import { INodeItem, ISceneItem } from "@/interfaces/editor.interfaces";
-
-/**
- * 章节node列表
- * @param params
- */
-export const ListScene = async (params: { bookId: string; chapterId: string; nodeId: string; }): Promise<ISceneItem[]> => {
-  return await Service.get('/scene/list', { params: params })
-}
 
 /**
  * 新增保存节点/块
@@ -65,4 +56,20 @@ export const EditNode = async (param: INodeItem) => {
  */
 export const DeleteNode = async (id: string) => {
   return await Service.delete('/node/delete', { params: { id } })
+}
+
+/**
+ * 新增branch
+ * @param param 参数
+ */
+export const AddBranch = async (param: ISceneItem) => {
+  return await Service.post('/node/branch/save', param)
+}
+
+/**
+ * 删除子节点Branch
+ * @param params 子节点id
+ */
+export const DeleteBranch = async (params: { id: string; nodeId: string }) => {
+  return await Service.delete('/node/branch/delete', { params })
 }

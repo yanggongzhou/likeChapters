@@ -22,22 +22,37 @@
 
 <script lang="ts" setup>
 import SceneOthers from '@/views/editor/content/others.vue'
-import { defineEmits, PropType, defineProps, reactive } from "vue";
-import { TemplateTypeEnum, TemplateTypeEnumZh } from "@/interfaces/editor.interfaces";
-import { ICharacterListItem } from "@/interfaces/character.interfaces";
+import { defineEmits, PropType, defineProps, reactive, ref, onBeforeMount } from "vue";
+import { ISceneItem, TemplateTypeEnum, TemplateTypeEnumZh } from "@/interfaces/editor.interfaces";
 import { EditorModule } from "@/store/modules/editor";
 import { AddScene } from "@/api/editor";
 import { SceneItemDto } from "@/utils/resultModule";
 
 const props = defineProps({
-  characterList: Object as PropType<ICharacterListItem[]>,
-  bookId: String,
-  chapterId: String,
-  nodeId: String,
-  isBranch: Boolean,
+  id: {
+    type: String,
+    required: true,
+  },
+  bookId: {
+    type: String,
+    required: true,
+  },
+  chapterId: {
+    type: String,
+    required: true,
+  },
+  nodeId: {
+    type: String,
+    required: true,
+  },
 });
+
 const emits = defineEmits(['cancel']);
-const sceneData = reactive(new SceneItemDto({ bookId: props.bookId, chapterId: props.chapterId, nodeId: props.nodeId }));
+const sceneData = ref(new SceneItemDto({
+  bookId: props.bookId,
+  chapterId: props.chapterId,
+  nodeId: props.nodeId
+} as ISceneItem));
 
 const delScene = () => {
   emits('cancel');
@@ -49,7 +64,7 @@ const saveScene = async () => {
   await EditorModule.Init({ bookId, chapterId })
   EditorModule.SetActiveNodeId(nodeId);
   // 清除编辑状态
-  const params = new SceneItemDto({ bookId, chapterId, nodeId })
+  const params = new SceneItemDto({ bookId, chapterId, nodeId } as ISceneItem)
   EditorModule.SetSceneItem(params);
 }
 
@@ -73,6 +88,7 @@ const saveBranch = () => {
     font-weight: 500;
     font-size: 14px;
     color: #5a5e66;
+
     .message-title {
       display: flex;
       justify-content: space-between;
@@ -80,9 +96,11 @@ const saveBranch = () => {
       border-radius: 8px 8px 0 0;
       padding: 10px 30px;
     }
+
     .message-content {
       position: relative;
       padding: 20px;
+
       .message-content_btn {
         position: absolute;
         bottom: 20px;
@@ -98,22 +116,25 @@ const saveBranch = () => {
         font-weight: 500;
         cursor: pointer;
         transition: opacity 0.5s;
+
         &:hover {
           opacity: 0.8;
         }
       }
 
-      /deep/.el-textarea__inner {
+      /deep/ .el-textarea__inner {
         border-radius: 8px;
         padding: 15px;
         font-weight: 500;
         font-size: 16px;
       }
-      /deep/.el-textarea .el-input__count {
+
+      /deep/ .el-textarea .el-input__count {
         right: 100px;
       }
     }
   }
+
   .message-detail_del {
     position: absolute;
     top: 0;
@@ -127,16 +148,19 @@ const saveBranch = () => {
     text-align: center;
     transition: opacity 0.5s;
     opacity: 0;
+
     &:hover {
       opacity: 0.8;
     }
   }
+
   &:hover {
     .message-detail_del {
       opacity: 1;
     }
   }
 }
+
 .isActive {
   border: 1px solid #9191fd;
 }
