@@ -1,6 +1,6 @@
 <template>
   <div class="editor-container">
-    <div id="choreographerMind"></div>
+    <div id="editorMind"></div>
     <div id="storyMiniMap"></div>
   </div>
 </template>
@@ -46,8 +46,10 @@ onMounted(() => {
   window.addEventListener('resize', choResize)
 })
 
+watch(() => EditorModule.isExpand, () => choResize())
+
 const choResize = debounce(() => {
-  const dom = document.getElementById('choreographerMind')
+  const dom = document.getElementById('editorMind')
   const width = dom?.offsetWidth || 500;
   const height = dom?.offsetHeight || 500;
   storyGraph.graphInstance.changeSize(width, height)
@@ -66,7 +68,11 @@ const refreshData = async (g6Data: GraphData): Promise<void> => {
     const newPoint = storyGraph.graphInstance.getCanvasByPoint(0, 0);
     // 移动画布相对位移
     storyGraph.graphInstance.translate(lastPoint.x - newPoint.x, lastPoint.y - newPoint.y);
-    storyGraph.refreshEdges()
+    storyGraph.refreshEdges();
+    if (activeNodeId.value) {
+      const newItem = storyGraph.graphInstance.findById(activeNodeId.value)
+      newItem && storyGraph.graphInstance.updateItem(newItem, { color: 'red' })
+    }
   } catch (e) {
     // location.reload()
   }
@@ -202,7 +208,7 @@ onBeforeRouteLeave((to, from, next) => {
   width: 100%;
   position: relative;
 
-  #choreographerMind {
+  #editorMind {
     font-size: 0;
     min-height: 500px;
     height: 100%;

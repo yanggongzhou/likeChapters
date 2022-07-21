@@ -28,6 +28,7 @@ class EDITOR extends VuexModule implements IEditorModuleState {
   private SET_ACTIVENODEID(activeNodeId: string) {
     this.activeNodeId = activeNodeId;
   }
+
   @Action
   public SetActiveNodeId(activeNodeId: string) {
     this.SET_ACTIVENODEID(activeNodeId);
@@ -69,8 +70,6 @@ class EDITOR extends VuexModule implements IEditorModuleState {
   public async Init({ bookId, chapterId }: { bookId: string, chapterId: string }) {
     const list = await ListNode(bookId, chapterId);
     this.SET_RESULT(list);
-    this.SET_NODEITEM(list[0]);
-    this.SetActiveNodeId(list[0].id as string);
     const g6EditorData = AnalyseEditorData(list);
     storyBus.emit('EditorModule/refreshData', g6EditorData)
   }

@@ -1,5 +1,4 @@
 <template>
-<!--  :class="{'isActive': isEdit}"-->
   <div class="message-detail-wrap">
     <div class="message-content">
       <div class="message-title">
@@ -36,127 +35,61 @@
       </div>
 
       <div class="message-content">
-        <template v-if="isEdit">
-          <el-input
-            :model-value="sceneData.content"
-            @input="editContent"
-            maxlength="30"
-            placeholder="Please input"
-            :autosize="{ minRows: 6 }"
-            show-word-limit
-            type="textarea"
-          />
-          <div class="message-content_btn" @click.stop="saveScene"> 保存</div>
-        </template>
-        <div v-else>{{ sceneData.content }}</div>
+        <el-input
+          v-model="sceneData.content"
+          maxlength="30"
+          placeholder="Please input"
+          :autosize="{ minRows: 6 }"
+          show-word-limit
+          type="textarea"
+        />
+        <div class="message-content_btn" @click.stop="saveScene"> 保存</div>
       </div>
       <div class="message-detail_del" @click.stop="delScene">x</div>
-      <div v-if="!isEdit" class="message-detail_edit">
-        <el-icon @click="chooseScene"><Edit /></el-icon>
-      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import SceneOthers from '@/views/editor/content/others.vue'
-import { defineEmits, PropType, ref, defineProps, computed, onBeforeMount, watch } from "vue";
-import { ISceneItem, TemplateTypeEnum, TemplateTypeEnumZh } from "@/interfaces/editor.interfaces";
+import { defineEmits, PropType, defineProps, reactive } from "vue";
+import { TemplateTypeEnum, TemplateTypeEnumZh } from "@/interfaces/editor.interfaces";
 import { ICharacterListItem } from "@/interfaces/character.interfaces";
 import { EditorModule } from "@/store/modules/editor";
-import { DeleteScene, EditScene } from "@/api/editor";
-import { useRoute } from "vue-router";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { AddScene } from "@/api/editor";
 import { SceneItemDto } from "@/utils/resultModule";
 
-const route = useRoute();
-const bookId = computed(() => route.query.bookId as string);
-const chapterId = computed(() => route.query.chapterId as string);
-const emits = defineEmits(['message', 'choice', 'link']);
 const props = defineProps({
   characterList: Object as PropType<ICharacterListItem[]>,
-  sceneItem: {
-    type: Object as PropType<ISceneItem>,
-    required: true
-  },
+  bookId: String,
+  chapterId: String,
+  nodeId: String,
 });
-const isEdit = computed(() => EditorModule.sceneItem.id === sceneData.value.id);
-
-const sceneData = ref({} as ISceneItem);
-
-watch(() => props.sceneItem, (val) => {
-  sceneData.value = { ...val };
-}, { deep: true })
-
-onBeforeMount(() => {
-  sceneData.value = props.sceneItem;
-})
-
-watch(() => EditorModule.sceneItem, (storeValue) => {
-  if (storeValue.id === sceneData.value.id) {
-    sceneData.value = EditorModule.sceneItem
-  } else {
-    sceneData.value = props.sceneItem;
-  }
-})
+const emits = defineEmits(['cancel']);
+const sceneData = reactive(new SceneItemDto({ bookId: props.bookId, chapterId: props.chapterId, nodeId: props.nodeId }));
 
 const dialogTypeChange = (val: TemplateTypeEnum) => {
-  EditorModule.SetSceneItem({ ...sceneData.value, type: val });
+  sceneData.type = val;
 }
 
 const roleChange = (roleId: string) => {
   const roleName = props.characterList?.find(val => val.id === roleId)?.characterName || '';
-  EditorModule.SetSceneItem({ ...sceneData.value, roleId, roleName });
+  sceneData.roleId = roleId;
+  sceneData.roleName = roleName;
 }
 
-const editContent = (content: string) => {
-  EditorModule.SetSceneItem({ ...sceneData.value, content });
-}
-
-const delScene = async () => {
-  const { id, nodeId } = props.sceneItem;
-  if (id && nodeId) {
-    ElMessageBox.confirm(
-      'proxy will permanently delete the file. Continue?',
-      'Warning',
-      {
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Cancel',
-        type: 'warning',
-      }
-    )
-      .then(async () => {
-        await DeleteScene({ id, nodeId });
-        await EditorModule.Init({ bookId: bookId.value, chapterId: chapterId.value })
-        ElMessage({
-          type: 'success',
-          message: 'Delete completed',
-        })
-      })
-      .catch(() => {
-        ElMessage({
-          type: 'info',
-          message: 'Delete canceled',
-        })
-      })
-  }
+const delScene = () => {
+  emits('cancel');
 }
 
 const saveScene = async () => {
-  if (props.sceneItem?.id) {
-    await EditScene({ ...sceneData.value })
-  }
-  await EditorModule.Init({ bookId: bookId.value, chapterId: chapterId.value })
-  EditorModule.SetActiveNodeId(EditorModule.activeNodeId);
+  await AddScene({ ...sceneData.value });
+  const { bookId, chapterId, nodeId } = props;
+  await EditorModule.Init({ bookId, chapterId })
+  EditorModule.SetActiveNodeId(nodeId);
   // 清除编辑状态
-  const params = new SceneItemDto({ bookId: bookId.value, chapterId: chapterId.value, nodeId: EditorModule.activeNodeId })
+  const params = new SceneItemDto({ bookId, chapterId, nodeId })
   EditorModule.SetSceneItem(params);
-}
-
-const chooseScene = () => {
-  if (props.sceneItem?.id && !isEdit.value) {
-    EditorModule.SetSceneItem(props.sceneItem);
-  }
 }
 
 </script>
@@ -240,30 +173,7 @@ const chooseScene = () => {
       opacity: 0.8;
     }
   }
-  .message-detail_edit {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    font-size: 20px;
-    width: 80px;
-    height: 30px;
-    background-color: #9191fd;
-    color: #FFFFFF;
-    border-radius: 16px 0 8px;
-    line-height: 35px;
-    text-align: center;
-    font-weight: 500;
-    cursor: pointer;
-    transition: opacity 0.5s;
-    opacity: 0;
-    &:hover {
-      opacity: 0.8;
-    }
-  }
   &:hover {
-    .message-detail_edit{
-      opacity: 1;
-    }
     .message-detail_del {
       opacity: 1;
     }

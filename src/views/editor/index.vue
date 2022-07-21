@@ -27,6 +27,9 @@ const chapterId = computed(() => route.query.chapterId as string);
 
 onMounted(async () => {
   await EditorModule.Init({ bookId: bookId.value, chapterId: chapterId.value })
+  if (EditorModule.nodeList.length > 0 && EditorModule.nodeList[0].id) {
+    await EditorModule.SetActiveNodeId(EditorModule.nodeList[0].id);
+  }
 })
 </script>
 

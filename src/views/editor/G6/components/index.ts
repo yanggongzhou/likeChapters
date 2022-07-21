@@ -15,9 +15,9 @@ export interface IUseStoryGraph {
 
 const useStoryGraph = (width?: number, height?: number): IUseStoryGraph => {
   const { t } = useI18n();
-  const dom = document.getElementById('choreographerMind')
+  const dom = document.getElementById('editorMind')
   const graphInstance = new G6.Graph({
-    container: 'choreographerMind', // String | HTMLElement，必须，在 Step 1 中创建的容器 id 或容器本身
+    container: 'editorMind', // String | HTMLElement，必须，在 Step 1 中创建的容器 id 或容器本身
     width: width || dom?.offsetWidth || 500, // Number，必须，图的宽度
     height: height || dom?.offsetHeight || 500, // Number，必须，图的高度
     fitCenter: true,
