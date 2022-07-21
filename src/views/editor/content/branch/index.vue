@@ -9,14 +9,13 @@
             </span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item :command="TemplateTypeEnum.旁白">旁白</el-dropdown-item>
-                <el-dropdown-item :command="TemplateTypeEnum.内心独白">内心独白</el-dropdown-item>
-                <el-dropdown-item :command="TemplateTypeEnum.对话">对话</el-dropdown-item>
+                <el-dropdown-item :command="TemplateTypeEnum.对话分支">对话分支</el-dropdown-item>
+                <el-dropdown-item :command="TemplateTypeEnum.衣服分支">衣服分支</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
 
-          <el-dropdown @command="roleChange" trigger="click"  v-if="sceneData.type !== TemplateTypeEnum.旁白">
+          <el-dropdown @command="roleChange" trigger="click">
             <span class="el-dropdown-link">
               {{ sceneData.roleName || '角色' }} <el-icon class="el-icon--right"><arrow-down /></el-icon>
             </span>
@@ -34,18 +33,7 @@
         <SceneOthers/>
       </div>
 
-      <div class="message-content" v-if="!isBranch">
-        <el-input
-          v-model="sceneData.content"
-          maxlength="30"
-          placeholder="Please input"
-          :autosize="{ minRows: 4 }"
-          show-word-limit
-          type="textarea"
-        />
-        <div class="message-content_btn" @click.stop="saveScene"> 保存</div>
-      </div>
-      <div class="message-content" v-else>
+      <div class="message-content">
         <el-input
           v-model="sceneData.content"
           @focusout="saveBranch"
@@ -56,14 +44,13 @@
           type="textarea"
         />
       </div>
-      <div v-if="!isBranch" class="message-detail_del" @click.stop="delScene">x</div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import SceneOthers from '@/views/editor/content/others.vue'
-import { defineEmits, PropType, defineProps, reactive } from "vue";
+import { PropType, defineProps, reactive } from "vue";
 import { TemplateTypeEnum, TemplateTypeEnumZh } from "@/interfaces/editor.interfaces";
 import { ICharacterListItem } from "@/interfaces/character.interfaces";
 import { EditorModule } from "@/store/modules/editor";
@@ -75,10 +62,15 @@ const props = defineProps({
   bookId: String,
   chapterId: String,
   nodeId: String,
-  isBranch: Boolean,
 });
-const emits = defineEmits(['cancel']);
-const sceneData = reactive(new SceneItemDto({ bookId: props.bookId, chapterId: props.chapterId, nodeId: props.nodeId }));
+
+const sceneData = reactive(new SceneItemDto({
+  bookId: props.bookId,
+  chapterId: props.chapterId,
+  nodeId: props.nodeId,
+  type: TemplateTypeEnum.对话分支,
+  content: ''
+}));
 
 const dialogTypeChange = (val: TemplateTypeEnum) => {
   sceneData.type = val;
@@ -88,10 +80,6 @@ const roleChange = (roleId: string) => {
   const roleName = props.characterList?.find(val => val.id === roleId)?.characterName || '';
   sceneData.roleId = roleId;
   sceneData.roleName = roleName;
-}
-
-const delScene = () => {
-  emits('cancel');
 }
 
 const saveScene = async () => {

@@ -1,51 +1,10 @@
 <template>
-  <div class="message-detail-wrap">
-    <div class="message-content">
+  <div class="option-wrap">
+    <div class="option-content">
       <div class="message-title">
-        <div class="message-title_select">
-          <el-dropdown @command="dialogTypeChange" trigger="click">
-            <span class="el-dropdown-link">
-              {{ TemplateTypeEnumZh[sceneData.type] }} <el-icon class="el-icon--right"><arrow-down /></el-icon>
-            </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item :command="TemplateTypeEnum.旁白">旁白</el-dropdown-item>
-                <el-dropdown-item :command="TemplateTypeEnum.内心独白">内心独白</el-dropdown-item>
-                <el-dropdown-item :command="TemplateTypeEnum.对话">对话</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-
-          <el-dropdown @command="roleChange" trigger="click"  v-if="sceneData.type !== TemplateTypeEnum.旁白">
-            <span class="el-dropdown-link">
-              {{ sceneData.roleName || '角色' }} <el-icon class="el-icon--right"><arrow-down /></el-icon>
-            </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item
-                  v-for="character in characterList"
-                  :key="character.id"
-                  :command="character.id"
-                >{{ character.characterName }}</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </div>
         <SceneOthers/>
       </div>
-
-      <div class="message-content" v-if="!isBranch">
-        <el-input
-          v-model="sceneData.content"
-          maxlength="30"
-          placeholder="Please input"
-          :autosize="{ minRows: 4 }"
-          show-word-limit
-          type="textarea"
-        />
-        <div class="message-content_btn" @click.stop="saveScene"> 保存</div>
-      </div>
-      <div class="message-content" v-else>
+      <div class="message-content">
         <el-input
           v-model="sceneData.content"
           @focusout="saveBranch"
@@ -56,7 +15,7 @@
           type="textarea"
         />
       </div>
-      <div v-if="!isBranch" class="message-detail_del" @click.stop="delScene">x</div>
+      <div class="message-detail_del" @click.stop="delScene">x</div>
     </div>
   </div>
 </template>
@@ -80,16 +39,6 @@ const props = defineProps({
 const emits = defineEmits(['cancel']);
 const sceneData = reactive(new SceneItemDto({ bookId: props.bookId, chapterId: props.chapterId, nodeId: props.nodeId }));
 
-const dialogTypeChange = (val: TemplateTypeEnum) => {
-  sceneData.type = val;
-}
-
-const roleChange = (roleId: string) => {
-  const roleName = props.characterList?.find(val => val.id === roleId)?.characterName || '';
-  sceneData.roleId = roleId;
-  sceneData.roleName = roleName;
-}
-
 const delScene = () => {
   emits('cancel');
 }
@@ -111,7 +60,7 @@ const saveBranch = () => {
 </script>
 
 <style lang="less" scoped>
-.message-detail-wrap {
+.option-wrap {
   width: 100%;
   box-sizing: border-box;
   border-radius: 10px;
@@ -120,7 +69,7 @@ const saveBranch = () => {
   box-shadow: 0 1px 4px #00152914;
   position: relative;
 
-  .message-content {
+  .option-content {
     font-weight: 500;
     font-size: 14px;
     color: #5a5e66;
@@ -130,13 +79,6 @@ const saveBranch = () => {
       background-color: #f3f3fc;
       border-radius: 8px 8px 0 0;
       padding: 10px 30px;
-      .message-title_select {
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 180px;
-      }
     }
     .message-content {
       position: relative;
