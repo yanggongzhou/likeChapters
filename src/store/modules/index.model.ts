@@ -50,6 +50,5 @@ export interface IEditorModuleState {
   activeNodeId?: string;
   nodeList: INodeItem[];
   nodeItem: INodeItem;
-  sceneList: ISceneItem[];
   sceneItem: ISceneItem;
 }

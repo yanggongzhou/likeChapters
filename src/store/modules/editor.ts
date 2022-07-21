@@ -17,7 +17,6 @@ class EDITOR extends VuexModule implements IEditorModuleState {
   public activeNodeId = '' // active的节点id
   public nodeList = [] as Array<INodeItem>;
   public nodeItem = {} as INodeItem;
-  public sceneList = [] as ISceneItem[];
   public sceneItem = {} as ISceneItem;
 
   @Mutation
@@ -27,12 +26,17 @@ class EDITOR extends VuexModule implements IEditorModuleState {
 
   @Mutation
   private SET_ACTIVENODEID(activeNodeId: string) {
-    this.activeNodeId = activeNodeId
+    this.activeNodeId = activeNodeId;
   }
-
   @Action
   public SetActiveNodeId(activeNodeId: string) {
-    this.SET_ACTIVENODEID(activeNodeId)
+    this.SET_ACTIVENODEID(activeNodeId);
+    const _nodeItem = this.nodeList.find(val => val.id === activeNodeId);
+    if (_nodeItem) {
+      this.SET_NODEITEM(_nodeItem);
+    } else {
+      throw new Error('未查询到相应节点')
+    }
   }
 
   @Action
@@ -56,11 +60,6 @@ class EDITOR extends VuexModule implements IEditorModuleState {
     this.sceneItem = { ...sceneItem }
   }
 
-  @Mutation
-  private SET_SCENELIST(sceneList: ISceneItem[]) {
-    this.sceneList = JSON.parse(JSON.stringify(sceneList))
-  }
-
   @Action
   public SetSceneItem(sceneItem: ISceneItem) {
     this.SET_SCENEITEM(sceneItem)
@@ -69,13 +68,11 @@ class EDITOR extends VuexModule implements IEditorModuleState {
   @Action
   public async Init({ bookId, chapterId }: { bookId: string, chapterId: string }) {
     const list = await ListNode(bookId, chapterId);
-    const g6EditorData = AnalyseEditorData(list);
     this.SET_RESULT(list);
-    storyBus.emit('EditorModule/refreshData', g6EditorData)
     this.SET_NODEITEM(list[0]);
-    this.SET_ACTIVENODEID(list[0].id as string);
-    // const sceneList = await ListScene({ bookId, chapterId, nodeId: list[0].id as string })
-    this.SET_SCENELIST(list[0]?.sceneList || []);
+    this.SetActiveNodeId(list[0].id as string);
+    const g6EditorData = AnalyseEditorData(list);
+    storyBus.emit('EditorModule/refreshData', g6EditorData)
   }
 }
 

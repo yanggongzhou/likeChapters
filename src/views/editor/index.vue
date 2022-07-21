@@ -17,7 +17,7 @@
 import EditorContent from '@/views/editor/content/index.vue'
 import AvatarPreview from '@/views/characterCenter/preview/preview.vue'
 import EditorRight from '@/views/editor/right/right.vue'
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { EditorModule } from "@/store/modules/editor";
 

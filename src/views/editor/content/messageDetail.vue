@@ -1,107 +1,219 @@
 <template>
-  <div class="message-detail-wrap">
+  <div class="message-detail-wrap" :class="{'isActive': isEdit}" @click="chooseScene">
     <div class="message-content">
       <div class="message-title">
         <div class="message-title_select">
-<!--          类型-->
-          <el-select :model-value="sceneItem.type" @change="dialogTypeChange">
-            <el-option :label="'旁白'" :value="TemplateTypeEnum.旁白"/>
-            <el-option :label="'内心独白'" :value="TemplateTypeEnum.内心独白"/>
-            <el-option :label="'对话'" :value="TemplateTypeEnum.对话"/>
-          </el-select>
+          <el-dropdown @command="dialogTypeChange" trigger="click">
+            <span class="el-dropdown-link">
+              {{ TemplateTypeEnumZh[sceneData.type] }} <el-icon class="el-icon--right"><arrow-down /></el-icon>
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item :command="TemplateTypeEnum.旁白">旁白</el-dropdown-item>
+                <el-dropdown-item :command="TemplateTypeEnum.内心独白">内心独白</el-dropdown-item>
+                <el-dropdown-item :command="TemplateTypeEnum.对话">对话</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
 
-<!--          角色-->
-          <el-select v-model="roleId" v-if="sceneItem.type !== TemplateTypeEnum.旁白">
-            <el-option
-              v-for="character in characterList"
-              :key="character.id"
-              :label="character.characterName"
-              :value="character.id"/>
-          </el-select>
+          <el-dropdown @command="roleChange" trigger="click"  v-if="sceneData.type !== TemplateTypeEnum.旁白">
+            <span class="el-dropdown-link">
+              {{ sceneData.roleName || '角色' }} <el-icon class="el-icon--right"><arrow-down /></el-icon>
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item
+                  v-for="character in characterList"
+                  :key="character.id"
+                  :command="character.id"
+                >{{ character.characterName }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </div>
         <SceneOthers/>
       </div>
 
-      <div>
-        <el-input
-          :model-value="sceneItem.content"
-          @input="editContent"
-          maxlength="30"
-          placeholder="Please input"
-          :autosize="{ minRows: 2, maxRows: 4 }"
-          show-word-limit
-          type="textarea"
-        />
+      <div class="message-content">
+        <template v-if="isEdit">
+          <el-input
+            :model-value="sceneData.content"
+            @input="editContent"
+            maxlength="30"
+            placeholder="Please input"
+            :autosize="{ minRows: 6 }"
+            show-word-limit
+            type="textarea"
+          />
+          <div class="message-content_btn" @click.stop="saveScene"> 保存</div>
+        </template>
+        <div v-else>{{ sceneData.content }}</div>
       </div>
-
-      <el-button @click.stop="saveScene"> 保存</el-button>
-      <el-button @click.stop="delScene"> 删除</el-button>
+      <div v-if="isEdit" class="message-detail_del" @click.stop="delScene">x</div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import SceneOthers from '@/views/editor/content/others.vue'
-import { defineEmits, PropType, ref, defineProps } from "vue";
-import { ISceneItem, TemplateTypeEnum } from "@/interfaces/editor.interfaces";
+import { defineEmits, PropType, ref, defineProps, computed, onBeforeMount, watch } from "vue";
+import { ISceneItem, TemplateTypeEnum, TemplateTypeEnumZh } from "@/interfaces/editor.interfaces";
 import { ICharacterListItem } from "@/interfaces/character.interfaces";
 import { EditorModule } from "@/store/modules/editor";
-import { AddScene, DeleteScene } from "@/api/editor";
+import { AddScene, DeleteScene, EditScene } from "@/api/editor";
+import { useRoute } from "vue-router";
 
+const route = useRoute();
+const bookId = computed(() => route.query.bookId as string);
+const chapterId = computed(() => route.query.chapterId as string);
 const emits = defineEmits(['message', 'choice', 'link']);
 const props = defineProps({
   characterList: Object as PropType<ICharacterListItem[]>,
-  sceneItem: Object as PropType<ISceneItem>,
+  sceneItem: {
+    type: Object as PropType<ISceneItem>,
+    required: true
+  },
+});
+const isEdit = computed(() => EditorModule.sceneItem.id === sceneData.value.id);
+
+const sceneData = ref({} as ISceneItem);
+
+watch(() => props.sceneItem, (val) => {
+  sceneData.value = { ...val };
+}, { deep: true })
+
+onBeforeMount(() => {
+  sceneData.value = props.sceneItem;
+})
+
+watch(() => EditorModule.sceneItem, (storeValue) => {
+  if (storeValue.id === sceneData.value.id) {
+    sceneData.value = EditorModule.sceneItem
+  } else {
+    sceneData.value = props.sceneItem;
+  }
 })
 
 const dialogTypeChange = (val: TemplateTypeEnum) => {
-  EditorModule.SetSceneItem({ ...props.sceneItem, type: val });
+  EditorModule.SetSceneItem({ ...sceneData.value, type: val });
+}
+
+const roleChange = (roleId: string) => {
+  const roleName = props.characterList?.find(val => val.id === roleId)?.characterName || '';
+  EditorModule.SetSceneItem({ ...sceneData.value, roleId, roleName });
 }
 
 const editContent = (content: string) => {
-  EditorModule.SetSceneItem({ ...props.sceneItem, content });
+  EditorModule.SetSceneItem({ ...sceneData.value, content });
 }
 
 const delScene = async () => {
   const { id, nodeId } = props.sceneItem;
-  console.log(' id, nodeId',  id, nodeId, props.sceneItem)
   if (id && nodeId) {
     await DeleteScene({ id, nodeId });
+    await EditorModule.Init({ bookId: bookId.value, chapterId: chapterId.value })
   }
 }
+
 const saveScene = async () => {
-  // if () {}
-  console.log('{ ...props.sceneItem }------>', { ...props.sceneItem })
-  await AddScene({ ...props.sceneItem });
+  if (props.sceneItem?.id) {
+    await EditScene({ ...props.sceneItem })
+  } else {
+    await AddScene({ ...props.sceneItem });
+  }
+  await EditorModule.Init({ bookId: bookId.value, chapterId: chapterId.value })
 }
 
 const roleId = ref('')
+
+const chooseScene = () => {
+  if (props.sceneItem?.id && !isEdit.value) {
+    EditorModule.SetSceneItem(props.sceneItem);
+  }
+}
 
 </script>
 
 <style lang="less" scoped>
 .message-detail-wrap {
   width: 100%;
-  padding: 20px;
   box-sizing: border-box;
   border-radius: 10px;
   background-color: #FFFFFF;
   margin-top: 20px;
   box-shadow: 0 1px 4px #00152914;
+  position: relative;
 
   .message-content {
-    text-align: center;
+    font-weight: 500;
+    font-size: 14px;
+    color: #5a5e66;
     .message-title {
       display: flex;
       justify-content: space-between;
+      background-color: #f3f3fc;
+      border-radius: 8px 8px 0 0;
+      padding: 10px 30px;
       .message-title_select {
         font-size: 14px;
-        /deep/.el-select {
-          width: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 180px;
+      }
+    }
+    .message-content {
+      position: relative;
+      padding: 20px;
+      .message-content_btn {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1;
+        width: 80px;
+        height: 30px;
+        background-color: #9191fd;
+        color: #FFFFFF;
+        border-radius: 16px 0 8px;
+        line-height: 30px;
+        text-align: center;
+        font-weight: 500;
+        cursor: pointer;
+        transition: opacity 0.5s;
+        &:hover {
+          opacity: 0.8;
         }
+      }
 
+      /deep/.el-textarea__inner {
+        border-radius: 8px;
+        padding: 15px;
+        font-weight: 500;
+        font-size: 16px;
+      }
+      /deep/.el-textarea .el-input__count {
+        right: 100px;
       }
     }
   }
+  .message-detail_del {
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    width: 30px;
+    height: 20px;
+    background-color: #ff3434;
+    color: #FFFFFF;
+    border-radius: 0 8px;
+    text-align: center;
+    transition: opacity 0.5s;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+.isActive {
+  border: 1px solid #9191fd;
 }
 </style>

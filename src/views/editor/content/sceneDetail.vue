@@ -28,9 +28,8 @@ const inputChange = (value: string) => {
   background-color: #FFFFFF;
   font-size: 20px;
   font-weight: 500;
-  padding: 20px;
+  padding: 15px 30px;
   box-sizing: border-box;
-  height: 80px;
   display: flex;
   align-items: center;
   span {

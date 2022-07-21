@@ -66,7 +66,7 @@ export const AnalyseEditorData = (nodeVOS: INodeItem[]): GraphData => {
     label: item.sceneContent
   } as NodeConfig & { info: INodeItem }))
   // 第二步 分析节点内sceneList 得到线
-  nodeVOS.forEach(item => {
+  nodeVOS.forEach((item, index) => {
     if (Array.isArray(item.sceneList) && item.sceneList.length > 0) {
       const lastScene = item.sceneList[item.sceneList.length - 1]
       let edgesTargetData: string[] = [];
@@ -74,6 +74,11 @@ export const AnalyseEditorData = (nodeVOS: INodeItem[]): GraphData => {
         edgesTargetData = lastScene.options || [];
       } else if (lastScene.type === TemplateTypeEnum.头发分支 || lastScene.type === TemplateTypeEnum.衣服分支 || lastScene.type === TemplateTypeEnum.皮肤分支) {
         edgesTargetData = lastScene.selections || [];
+      } else {
+        // 如果没有分支时的选择 (需调整)
+        if (index === nodeVOS.length - 1) return;
+        const nextItem = nodeVOS[index + 1]
+        edgesTargetData = nextItem?.id ? [nextItem?.id] : [];
       }
       const edgesArr = edgesTargetData.map(opt => ({
         source: item.id,

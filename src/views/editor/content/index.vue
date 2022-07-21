@@ -7,14 +7,15 @@
         :characterList="characterList"
       />
     </template>
-    <MessageDetail
-      :sceneItem="sceneItem"
-      :characterList="characterList"
-    />
+
     <ControlLine
       @message="addMessage"
       @choice="addChoice"
       @link="addLink"
+    />
+    <MessageDetail
+      :sceneItem="sceneItem"
+      :characterList="characterList"
     />
   </div>
 </template>
@@ -36,7 +37,7 @@ const bookId = computed(() => route.query.bookId as string);
 const chapterId = computed(() => route.query.chapterId as string);
 const characterList = ref<ICharacterListItem[]>([])
 const sceneItem = computed(() => EditorModule.sceneItem);
-const sceneList = computed(() => EditorModule.sceneList as ISceneItem[]);
+const sceneList = computed(() => EditorModule.nodeItem.sceneList as ISceneItem[]);
 const activeNodeId = computed(() => EditorModule.activeNodeId as string);
 
 onBeforeMount(async () => {

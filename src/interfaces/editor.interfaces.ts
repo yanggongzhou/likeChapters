@@ -60,3 +60,13 @@ export enum TemplateTypeEnum {
   头发分支 = 'select_role_hair',
   衣服分支 = 'select_role_cloth',
 }
+export const TemplateTypeEnumZh = {
+  chat: '对话',
+  action: '旁白',
+  monologue: '内心独白',
+  select_chat: '对话分支',
+  option_chat: '选项',
+  select_role_skin: '皮肤分支',
+  select_role_hair: '头发分支',
+  select_role_cloth: '衣服分支',
+}
