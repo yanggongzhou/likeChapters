@@ -2,7 +2,7 @@ import G6 from "@antv/g6";
 import { storyEdgeMenu, storyNodeMenu } from "@/views/editor/G6/components/storyNodeMenu";
 import { storyMinimap } from "@/views/editor/G6/components/minimap";
 import { storyToolbar } from "@/views/editor/G6/components/toolbar";
-import { ChoNode } from "@/views/editor/G6/components/choNode.tsx";
+import { SceneNode } from "@/views/editor/G6/components/sceneNode.tsx";
 import Graph from "@antv/g6-pc/lib/graph/graph";
 import { EdgeConfig } from "@antv/g6-core/lib/types";
 import { onBeforeRouteLeave } from "vue-router";
@@ -32,7 +32,7 @@ const useStoryGraph = (width?: number, height?: number): IUseStoryGraph => {
         'zoom-canvas', // 缩放
       ],
     },
-    defaultNode: ChoNode(),
+    defaultNode: SceneNode(),
     defaultEdge: {
       type: 'polyline',
       style: {

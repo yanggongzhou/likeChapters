@@ -53,7 +53,6 @@ const delScene = () => {
 
 const saveOption = async () => {
   const { id, bookId, chapterId, nodeId } = sceneData.value;
-  console.log('sceneData.value------_>', sceneData.value)
   if (id && bookId && chapterId && nodeId) {
     await EditScene({ ...sceneData.value });
     await EditorModule.Init({ bookId, chapterId })

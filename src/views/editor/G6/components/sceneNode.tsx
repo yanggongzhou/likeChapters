@@ -1,7 +1,7 @@
 import { ModelConfig } from "@antv/g6-core/lib/types";
 import { ShapeDefine, ShapeOptions } from "@antv/g6-core/lib/interface/shape";
 import G6 from "@antv/g6";
-import { ISceneItem } from "@/interfaces/editor.interfaces";
+import { INodeItem, ISceneItem } from "@/interfaces/editor.interfaces";
 
 /**
  * format the string
@@ -32,9 +32,9 @@ export const fittingString = (str: string, maxWidth = 90, fontSize = 12) => {
   return res;
 };
 
-const CustomNode = (cfg: ModelConfig & { info: ISceneItem }): ShapeOptions | ShapeDefine => {
+const CustomNode = (cfg: ModelConfig & { info: ISceneItem | INodeItem }): ShapeOptions | ShapeDefine => {
   // const typeName = TemplateTypeZhEnum[cfg.info.type]
-  const typeName = cfg.info.sceneContent;
+
   return `
     <group style={{ cursor: 'pointer' }}>
       <rect style={{
@@ -50,7 +50,7 @@ const CustomNode = (cfg: ModelConfig & { info: ISceneItem }): ShapeOptions | Sha
         }} draggable="true">
           <text style={{
             marginLeft: 20,
-            fill: '#fff' }}>${typeName}</text>
+            fill: '#fff' }}>${cfg.label}</text>
         </rect>
         <rect style={{
           cursor: 'pointer',
@@ -66,11 +66,11 @@ const CustomNode = (cfg: ModelConfig & { info: ISceneItem }): ShapeOptions | Sha
     </group>`
 }
 
-G6.registerNode('cho-node', CustomNode);
+G6.registerNode('scene-node', CustomNode);
 
-export const ChoNode = () => {
+export const SceneNode = () => {
   return {
-    type: 'cho-node',
+    type: 'scene-node',
     color: '#9191fd',
   }
 }

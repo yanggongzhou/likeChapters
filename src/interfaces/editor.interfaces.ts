@@ -1,3 +1,5 @@
+import { NodeConfig } from "@antv/g6";
+
 export interface INodeItem {
   id?: string;
   bookId: string;
@@ -69,4 +71,8 @@ export const TemplateTypeEnumZh = {
   select_role_skin: '皮肤分支',
   select_role_hair: '头发分支',
   select_role_cloth: '衣服分支',
+}
+
+export interface IEditorNodeConfig extends NodeConfig {
+  info: INodeItem | ISceneItem;
 }

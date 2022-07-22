@@ -1,4 +1,11 @@
-import { EmotionEnum, INodeItem, ISceneItem, PositionEnum, TemplateTypeEnum } from "@/interfaces/editor.interfaces";
+import {
+  EmotionEnum,
+  IEditorNodeConfig,
+  INodeItem,
+  ISceneItem,
+  PositionEnum,
+  TemplateTypeEnum
+} from "@/interfaces/editor.interfaces";
 import { GraphData, NodeConfig } from "@antv/g6";
 import { EdgeConfig } from "@antv/g6-core/lib/types";
 
@@ -59,32 +66,80 @@ export const AnalyseEditorData = (nodeVOS: INodeItem[]): GraphData => {
     nodes: [],
     edges: []
   } as GraphData; // 编导路径图
-  // 第一步 得到块
+  // 1.1 得到Node (基于scene)
   nodeData.nodes = nodeVOS.map(item => ({
     info: { ...item },
     id: item.id,
     label: item.sceneContent
-  } as NodeConfig & { info: INodeItem }))
-  // 第二步 分析节点内sceneList 得到线
+  } as IEditorNodeConfig))
+  // 1.2 得到Node (基于Branch Options)
+  const _nodes: IEditorNodeConfig[] = []
+  nodeVOS.forEach(item => {
+    if (Array.isArray(item.sceneList) && item.sceneList.length > 0) {
+      const filterTypes = [
+        TemplateTypeEnum.头发分支,
+        TemplateTypeEnum.衣服分支,
+        TemplateTypeEnum.皮肤分支,
+        TemplateTypeEnum.对话分支,
+        TemplateTypeEnum.选项
+      ]
+      const branchOptionList = item.sceneList.filter(val => {
+        return filterTypes.indexOf(val.type) !== -1
+      });
+      if (branchOptionList.length > 0) {
+        branchOptionList.forEach(bp => {
+          _nodes.push({
+            info: { ...bp },
+            id: bp.id as string,
+            label: bp.type === TemplateTypeEnum.选项 ? 'Option' : 'Branch',
+            color: bp.type === TemplateTypeEnum.选项 ? '#a1a1a1' : '#e98f8f'
+          })
+        })
+      }
+    }
+  })
+  nodeData.nodes = nodeData.nodes.concat(_nodes)
+
+  // 第二步 分析节点内sceneList 得到Edges
   nodeVOS.forEach((item, index) => {
     if (Array.isArray(item.sceneList) && item.sceneList.length > 0) {
-      const lastScene = item.sceneList[item.sceneList.length - 1]
+      const lastScene = item.sceneList[item.sceneList.length - 1];
+      const filterTypes = [
+        TemplateTypeEnum.头发分支,
+        TemplateTypeEnum.衣服分支,
+        TemplateTypeEnum.皮肤分支,
+        TemplateTypeEnum.对话分支
+      ]
+      const branchItem = item.sceneList.find(val => {
+        return filterTypes.indexOf(val.type) !== -1
+      });
+      let normalEdge: string[] = [];
       let edgesTargetData: string[] = [];
-      if (lastScene.type === TemplateTypeEnum.对话分支) {
-        edgesTargetData = lastScene.options || [];
-      } else if (lastScene.type === TemplateTypeEnum.头发分支 || lastScene.type === TemplateTypeEnum.衣服分支 || lastScene.type === TemplateTypeEnum.皮肤分支) {
-        edgesTargetData = lastScene.selections || [];
+      if (branchItem) {
+        if (lastScene.type === TemplateTypeEnum.对话分支) {
+          edgesTargetData = lastScene.options || [];
+        } else {
+          edgesTargetData = lastScene.selections || [];
+        }
       } else {
         // 如果没有分支时的选择 (需调整)
         if (index === nodeVOS.length - 1) return;
         const nextItem = nodeVOS[index + 1]
-        edgesTargetData = nextItem?.id ? [nextItem?.id] : [];
+        normalEdge = nextItem?.id ? [nextItem?.id] : [];
       }
-      const edgesArr = edgesTargetData.map(opt => ({
+      const edgesArr1 = normalEdge.map(opt => ({
         source: item.id,
         target: opt
       } as EdgeConfig)) || [];
-      nodeData.edges = nodeData.edges?.concat(edgesArr)
+
+      // edgesTargetData.forEach(val =>)
+
+      const edgesArr2 = edgesTargetData.map(opt => ({
+        source: branchItem?.id,
+        target: opt
+      } as EdgeConfig)) || [];
+
+      nodeData.edges = nodeData.edges?.concat([...edgesArr1, ...edgesArr2])
     }
   });
   return nodeData;
