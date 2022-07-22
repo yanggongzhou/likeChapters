@@ -1,18 +1,14 @@
 <template>
   <div class="option-wrap">
     <div class="option-content">
-      <div class="message-title">
-        <SceneOthers/>
-      </div>
-      <div class="message-content">
+      <div class="option-title">Choice A</div>
+      <div class="option-text">
         <el-input
           v-model="sceneData.content"
-          @focusout="saveBranch"
+          @focusout="saveOption"
           maxlength="30"
           placeholder="Please input"
-          :autosize="{ minRows: 2 }"
           show-word-limit
-          type="textarea"
         />
       </div>
       <div class="message-detail_del" @click.stop="delScene">x</div>
@@ -21,55 +17,50 @@
 </template>
 
 <script lang="ts" setup>
-import SceneOthers from '@/views/editor/content/others.vue'
-import { defineEmits, PropType, defineProps, reactive, ref, onBeforeMount } from "vue";
+import { defineEmits, PropType, defineProps, ref, computed, watch, onBeforeMount } from "vue";
 import { ISceneItem, TemplateTypeEnum, TemplateTypeEnumZh } from "@/interfaces/editor.interfaces";
 import { EditorModule } from "@/store/modules/editor";
-import { AddScene } from "@/api/editor";
-import { SceneItemDto } from "@/utils/resultModule";
+import { EditScene } from "@/api/editor";
+import { ElMessage } from "element-plus";
 
 const props = defineProps({
   id: {
     type: String,
     required: true,
   },
-  bookId: {
-    type: String,
-    required: true,
-  },
-  chapterId: {
-    type: String,
-    required: true,
-  },
-  nodeId: {
-    type: String,
-    required: true,
-  },
 });
 
 const emits = defineEmits(['cancel']);
-const sceneData = ref(new SceneItemDto({
-  bookId: props.bookId,
-  chapterId: props.chapterId,
-  nodeId: props.nodeId
-} as ISceneItem));
+const sceneData = ref<ISceneItem>({ content: '' } as ISceneItem);
+
+watch(() => EditorModule.nodeItem.sceneList, (list) => {
+  const optionItem = list?.find(val => val.id === props.id);
+  if (optionItem) {
+    sceneData.value = { ...optionItem };
+  }
+}, { deep: true })
+
+onBeforeMount(() => {
+  const optionItem = EditorModule.nodeItem.sceneList?.find(val => val.id === props.id);
+  if (optionItem) {
+    sceneData.value = { ...optionItem };
+  }
+})
 
 const delScene = () => {
   emits('cancel');
 }
 
-const saveScene = async () => {
-  await AddScene({ ...sceneData.value });
-  const { bookId, chapterId, nodeId } = props;
-  await EditorModule.Init({ bookId, chapterId })
-  EditorModule.SetActiveNodeId(nodeId);
-  // 清除编辑状态
-  const params = new SceneItemDto({ bookId, chapterId, nodeId } as ISceneItem)
-  EditorModule.SetSceneItem(params);
-}
-
-const saveBranch = () => {
-
+const saveOption = async () => {
+  const { id, bookId, chapterId, nodeId } = sceneData.value;
+  console.log('sceneData.value------_>', sceneData.value)
+  if (id && bookId && chapterId && nodeId) {
+    await EditScene({ ...sceneData.value });
+    await EditorModule.Init({ bookId, chapterId })
+    EditorModule.SetActiveNodeId(nodeId);
+  } else {
+    ElMessage.error('Choice 数据异常')
+  }
 }
 
 </script>
@@ -89,49 +80,21 @@ const saveBranch = () => {
     font-size: 14px;
     color: #5a5e66;
 
-    .message-title {
-      display: flex;
-      justify-content: space-between;
-      background-color: #f3f3fc;
-      border-radius: 8px 8px 0 0;
-      padding: 10px 30px;
+    .option-title {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background-color: #9191fd;
+      border-radius: 8px 0 16px 0;
+      padding: 3px 20px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #FFFFFF;
     }
 
-    .message-content {
+    .option-text {
       position: relative;
-      padding: 20px;
-
-      .message-content_btn {
-        position: absolute;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1;
-        width: 80px;
-        height: 30px;
-        background-color: #9191fd;
-        color: #FFFFFF;
-        border-radius: 16px 0 8px;
-        line-height: 30px;
-        text-align: center;
-        font-weight: 500;
-        cursor: pointer;
-        transition: opacity 0.5s;
-
-        &:hover {
-          opacity: 0.8;
-        }
-      }
-
-      /deep/ .el-textarea__inner {
-        border-radius: 8px;
-        padding: 15px;
-        font-weight: 500;
-        font-size: 16px;
-      }
-
-      /deep/ .el-textarea .el-input__count {
-        right: 100px;
-      }
+      padding: 30px 20px 20px;
     }
   }
 

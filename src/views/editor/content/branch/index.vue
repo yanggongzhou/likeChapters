@@ -51,9 +51,6 @@
       v-for="val in branchData.options"
       :key="val"
       :id="val"
-      :book-id="bookId"
-      :chapter-id="chapterId"
-      :node-id="nodeId"
     />
   </div>
 </template>
