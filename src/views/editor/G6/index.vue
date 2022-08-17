@@ -88,7 +88,8 @@ const canvasClick = (evt: IG6GraphEvent) => {
 
 watch(() => EditorModule.activeNodeId, (newValue, oldValue) => {
   const oldItem = storyGraph.graphInstance.findById(oldValue)
-  oldItem && storyGraph.graphInstance.updateItem(oldItem, { color: '#9191fd' })
+  console.log('oldItem---------_>', oldItem)
+  oldItem && storyGraph.graphInstance.updateItem(oldItem, { color: oldItem.defaultColor || '#9191fd' })
   const newItem = storyGraph.graphInstance.findById(newValue)
   newItem && storyGraph.graphInstance.updateItem(newItem, { color: 'red' })
 })
@@ -116,6 +117,7 @@ const nodeClick = async (evt: IG6GraphEvent) => {
     await EditorModule.Init({ bookId: bookId.value, chapterId: chapterId.value });
   } else {
     if (model && model.id !== activeNodeId.value) {
+      console.log('model-----_>', model)
       EditorModule.SetActiveNodeId(model?.id as string);
     }
   }

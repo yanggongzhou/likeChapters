@@ -10,7 +10,9 @@
           placeholder="Please input"
           show-word-limit
         />
+        <slot name="link"></slot>
       </div>
+
       <div class="message-detail_del" @click.stop="delScene">x</div>
     </div>
   </div>
@@ -30,7 +32,7 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(['cancel']);
+const emits = defineEmits(['cancel', 'chooseLink']);
 const sceneData = ref<ISceneItem>({ content: '' } as ISceneItem);
 
 watch(() => EditorModule.nodeItem.sceneList, (list) => {
@@ -79,6 +81,7 @@ const saveOption = async () => {
     font-size: 14px;
     color: #5a5e66;
 
+
     .option-title {
       position: absolute;
       top: 0;
@@ -94,7 +97,11 @@ const saveOption = async () => {
     .option-text {
       position: relative;
       padding: 30px 20px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
+
   }
 
   .message-detail_del {

@@ -92,7 +92,8 @@ export const AnalyseEditorData = (nodeVOS: INodeItem[]): GraphData => {
             info: { ...bp },
             id: bp.id as string,
             label: bp.type === TemplateTypeEnum.选项 ? 'Option' : 'Branch',
-            color: bp.type === TemplateTypeEnum.选项 ? '#a1a1a1' : '#e98f8f'
+            color: bp.type === TemplateTypeEnum.选项 ? '#a1a1a1' : '#e98f8f',
+            defaultColor: bp.type === TemplateTypeEnum.选项 ? '#a1a1a1' : '#e98f8f',
           })
         })
       }
@@ -103,43 +104,56 @@ export const AnalyseEditorData = (nodeVOS: INodeItem[]): GraphData => {
   // 第二步 分析节点内sceneList 得到Edges
   nodeVOS.forEach((item, index) => {
     if (Array.isArray(item.sceneList) && item.sceneList.length > 0) {
-      const lastScene = item.sceneList[item.sceneList.length - 1];
       const filterTypes = [
         TemplateTypeEnum.头发分支,
         TemplateTypeEnum.衣服分支,
         TemplateTypeEnum.皮肤分支,
         TemplateTypeEnum.对话分支
-      ]
+      ];
+      // 有线的option
+      const optionList = item.sceneList.filter(val => {
+        return val.nextId && TemplateTypeEnum.选项 === val.type;
+      });
+
       const branchItem = item.sceneList.find(val => {
         return filterTypes.indexOf(val.type) !== -1
       });
       let normalEdge: string[] = [];
       let edgesTargetData: string[] = [];
       if (branchItem) {
-        if (lastScene.type === TemplateTypeEnum.对话分支) {
-          edgesTargetData = lastScene.options || [];
+        // 如果有分支时的选择
+        if (branchItem.type === TemplateTypeEnum.对话分支) {
+          edgesTargetData = branchItem.options || [];
         } else {
-          edgesTargetData = lastScene.selections || [];
+          edgesTargetData = branchItem.selections || [];
         }
+        const edgesArr2 = edgesTargetData.map(opt => ({
+          source: branchItem?.id,
+          target: opt
+        } as EdgeConfig)) || [];
+        // branch来源node 的线
+        const sceneBranchEdge = {
+          source: item.id,
+          target: branchItem?.id,
+        }
+
+        const optionEdges = optionList.map(optItem => ({
+          source: optItem.id,
+          target: optItem.nextId
+        }))
+
+        nodeData.edges = nodeData.edges?.concat([...edgesArr2, ...optionEdges, sceneBranchEdge]);
       } else {
-        // 如果没有分支时的选择 (需调整)
+        // 如果没有分支时的选择
         if (index === nodeVOS.length - 1) return;
         const nextItem = nodeVOS[index + 1]
         normalEdge = nextItem?.id ? [nextItem?.id] : [];
+        const edgesArr1 = normalEdge.map(opt => ({
+          source: item.id,
+          target: opt
+        } as EdgeConfig)) || [];
+        nodeData.edges = nodeData.edges?.concat(edgesArr1);
       }
-      const edgesArr1 = normalEdge.map(opt => ({
-        source: item.id,
-        target: opt
-      } as EdgeConfig)) || [];
-
-      // edgesTargetData.forEach(val =>)
-
-      const edgesArr2 = edgesTargetData.map(opt => ({
-        source: branchItem?.id,
-        target: opt
-      } as EdgeConfig)) || [];
-
-      nodeData.edges = nodeData.edges?.concat([...edgesArr1, ...edgesArr2])
     }
   });
   return nodeData;

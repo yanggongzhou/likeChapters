@@ -51,11 +51,16 @@
       v-for="val in branchData.options"
       :key="val"
       :id="val"
-    />
+    >
+      <template #link>
+        <LinkIcon @linkTo="(nodeId) => optionLink(nodeId, val)"></LinkIcon>
+      </template>
+    </OptionMessage>
   </div>
 </template>
 
 <script lang="ts" setup>
+import LinkIcon from '@/views/editor/content/components/linkIcon.vue'
 import OptionMessage from '@/views/editor/content/branch/optionMessage.vue'
 import SceneOthers from '@/views/editor/content/others.vue'
 import { PropType, defineProps, ref, defineEmits } from "vue";
@@ -101,6 +106,14 @@ const saveScene = async () => {
 const saveBranch = async () => {
   await EditScene({ ...sceneData.value });
   emits('refresh');
+}
+// 选项link
+const optionLink = async (nodeId: string, optionId: string) => {
+  const optionData = EditorModule.nodeItem.sceneList?.find(val => val.id === optionId);
+  if (optionData) {
+    await EditScene({ ...optionData, nextId: nodeId });
+    emits('refresh');
+  }
 }
 
 </script>
